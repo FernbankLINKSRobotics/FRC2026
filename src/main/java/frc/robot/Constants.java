@@ -48,4 +48,36 @@ public final class Constants
     public static final double RIGHT_X_DEADBAND = 0.1;
     public static final double TURN_CONSTANT    = 6;
   }
+
+  public static class FeedForwardConstants
+  {
+    public static class BackLeft
+    {
+      public static final double Ks = 0.15035;
+      public static final double Kv = 2.7018;
+      public static final double Ka = 0.28192;
+      public static final double Kp = 0.024908;
+    }
+    public static class BackRight
+    {
+      public static final double Ks = 0.1627;
+      public static final double Kv = 2.6723;
+      public static final double Ka = 0.27119;
+      public static final double Kp = 0.035429;
+    }
+    public static class FrontLeft
+    {
+      public static final double Ks = 0.16211;
+      public static final double Kv = 2.6463;
+      public static final double Ka = 2.6463;
+      public static final double Kp = 0.051253;
+    }
+    public static class FrontRight
+    {
+      public static final double Ks = 0.18683;
+      public static final double Kv = 2.595;
+      public static final double Ka = 0.32542;
+      public static final double Kp = 0.10249;
+    }
+  }
 }
