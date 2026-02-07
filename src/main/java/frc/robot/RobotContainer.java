@@ -34,7 +34,7 @@ public class RobotContainer
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final         CommandXboxController driverXbox = new CommandXboxController(0);
   // The robot's subsystems and commands are defined here...
-  public final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve/maxSwerve"));
+  public final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve/maxSwerve_old"));
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
@@ -183,11 +183,11 @@ public class RobotContainer
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand()
+  public Command getAutonomousCommand(String choice)
   {
     // An example command will be run in autonomous
     
-    return drivebase.getAutonomousCommand("New Auto");
+    return drivebase.getAutonomousCommand(choice);
   }
 
   public void setMotorBrake(boolean brake)

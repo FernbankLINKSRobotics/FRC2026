@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -22,6 +24,8 @@ public class Robot extends TimedRobot
   private        Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   private Timer disabledTimer;
 
@@ -48,6 +52,10 @@ public class Robot extends TimedRobot
     // Create a timer to disable motor brake a few seconds after disable.  This will let the robot stop
     // immediately when disabled, but then also let it be pushed more 
     disabledTimer = new Timer();
+
+    m_chooser.setDefaultOption("New Auto", "New Auto");
+    m_chooser.addOption("forward 1 left 0.5", "forward 1 left 0.5");
+    SmartDashboard.putData("Auto Start Choices", m_chooser);
 
     if (isSimulation())
     {
@@ -101,7 +109,7 @@ public class Robot extends TimedRobot
   public void autonomousInit()
   {
     m_robotContainer.setMotorBrake(true);
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand(m_chooser.getSelected());
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null)
@@ -147,7 +155,7 @@ public class Robot extends TimedRobot
   {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    m_robotContainer.drivebase.sysIdDriveMotorCommand().schedule();
+    m_robotContainer.drivebase.sysIdAngleMotorCommand().schedule();
   }
 
   /**
