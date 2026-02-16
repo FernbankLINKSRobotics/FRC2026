@@ -63,17 +63,24 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Enable vision odometry updates while driving.
    */
-  private final boolean     visionDriveTest = false;
+  private final boolean     visionDriveTest = true;
   /**
    * PhotonVision class to keep an accurate odometry.
    */
   private       Vision      vision;
+
+  public Vision getSwerveVision() {
+    System.out.println("SwerveSubsystem.getSwerveVision line 73");
+    return vision;
+  }
+
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
    * @param directory Directory of swerve drive config files.
    */
+  
   public SwerveSubsystem(File directory)
   {
     boolean blueAlliance = false;
@@ -106,7 +113,8 @@ public class SwerveSubsystem extends SubsystemBase
     {
       setupPhotonVision();
       // Stop the odometry thread if we are using vision that way we can synchronize updates better.
-      swerveDrive.stopOdometryThread();
+      //swerveDrive.stopOdometryThread();
+      System.out.println("set up photon vision");
     }
     setupPathPlanner();
     RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
@@ -143,6 +151,7 @@ public class SwerveSubsystem extends SubsystemBase
     {
       swerveDrive.updateOdometry();
       vision.updatePoseEstimation(swerveDrive);
+      vision.getDistanceFromAprilTag(26);
     }
   }
 
@@ -188,9 +197,9 @@ public class SwerveSubsystem extends SubsystemBase
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(1, 0.0, 0.0),
+              new PIDConstants(5.0, 0.0, 0.0),
               // Translation PID constants
-              new PIDConstants(0.15, 0.0, 0.0)
+              new PIDConstants(0.1, 0.0, 0.0)
               // Rotation PID constants
           ),
           config,

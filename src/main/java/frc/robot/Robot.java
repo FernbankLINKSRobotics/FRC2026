@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.swervedrive.Vision;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as
@@ -28,6 +30,8 @@ public class Robot extends TimedRobot
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   private Timer disabledTimer;
+
+  private       Vision      vision;
 
   public Robot()
   {
@@ -54,7 +58,7 @@ public class Robot extends TimedRobot
     disabledTimer = new Timer();
 
     m_chooser.setDefaultOption("New Auto", "New Auto");
-    m_chooser.addOption("forward 1 left 0.5", "forward 1 left 0.5");
+    m_chooser.addOption("PID test 1", "PID test 1");
     SmartDashboard.putData("Auto Start Choices", m_chooser);
 
     if (isSimulation())
@@ -78,6 +82,7 @@ public class Robot extends TimedRobot
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    System.out.println(m_robotContainer.drivebase.getSwerveVision().getDistanceFromAprilTag(24));
   }
 
   /**
