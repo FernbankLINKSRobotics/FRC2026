@@ -21,8 +21,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.shooter.ShooterStartCommand;
 import frc.robot.commands.shooter.ShooterStopCommand;
+import frc.robot.subsystems.scoring.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
+
 import java.io.File;
 import swervelib.SwerveInputStream;
 
