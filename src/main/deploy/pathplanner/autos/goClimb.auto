@@ -7,31 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "straight 0.5"
+            "pathName": "goShoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "right 90"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "down 0.5"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "left 90"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "straight 0.5 2"
+            "pathName": "goClimbAfterShoot"
           }
         }
       ]

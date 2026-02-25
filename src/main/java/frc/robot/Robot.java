@@ -4,17 +4,15 @@
 
 package frc.robot;
 
-import edu.wpi.first.cscore.MjpegServer;
-import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.cameraserver.CameraServer;
+//import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.swervedrive.Vision;
 import edu.wpi.first.cameraserver.CameraServer;
 
 
@@ -35,11 +33,10 @@ public class Robot extends TimedRobot
 
   private Timer disabledTimer;
 
-  private       Vision      vision;
-
   public Robot()
   {
     instance = this;
+    
   }
 
   public static Robot getInstance()
@@ -61,10 +58,11 @@ public class Robot extends TimedRobot
     // immediately when disabled, but then also let it be pushed more 
     disabledTimer = new Timer();
 
-    //CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
 
-    m_chooser.setDefaultOption("New Auto", "New Auto");
-    m_chooser.addOption("PID test 1", "PID test 1");
+    m_chooser.setDefaultOption("goClimb", "goClimb");
+    m_chooser.addOption("pidTest1", "pidTest1");
+    m_chooser.addOption("turn", "turn");
     SmartDashboard.putData("Auto Start Choices", m_chooser);
 
     if (isSimulation())
@@ -88,7 +86,7 @@ public class Robot extends TimedRobot
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    System.out.println(m_robotContainer.drivebase.getSwerveVision().getDistanceFromAprilTag(24));
+    //System.out.println(m_robotContainer.drivebase.getSwerveVision().getDistanceFromAprilTag(24));
   }
 
   /**
@@ -166,7 +164,7 @@ public class Robot extends TimedRobot
   {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    m_robotContainer.drivebase.sysIdAngleMotorCommand().schedule();
+    //m_robotContainer.drivebase.sysIdAngleMotorCommand().schedule();
   }
 
   /**
