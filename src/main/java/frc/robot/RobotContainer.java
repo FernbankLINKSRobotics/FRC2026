@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.scoring.IntakeSubsystem;
 import frc.robot.subsystems.scoring.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
@@ -39,7 +40,8 @@ public class RobotContainer
   final         CommandXboxController scoringXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
   public final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve/maxSwerve_old"));
-  public final static ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  public static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  public static final IntakeSubsystem intakeSubsytem = new IntakeSubsystem();
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
