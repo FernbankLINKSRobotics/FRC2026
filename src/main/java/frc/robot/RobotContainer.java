@@ -23,7 +23,6 @@ import frc.robot.subsystems.scoring.IntakeSubsystem;
 import frc.robot.subsystems.scoring.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
-
 import java.io.File;
 import swervelib.SwerveInputStream;
 
@@ -42,6 +41,7 @@ public class RobotContainer
   public final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve/maxSwerve_old"));
   public static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   public static final IntakeSubsystem intakeSubsytem = new IntakeSubsystem();
+  //private Vision vision;
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
@@ -173,14 +173,18 @@ public class RobotContainer
       driverXbox.back().whileTrue(drivebase.centerModulesCommand());
       driverXbox.leftBumper().onTrue(Commands.none());
       driverXbox.rightBumper().onTrue(Commands.none());
+
     } else
     {
       driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
-      scoringXbox.start().onTrue(Commands.runOnce(shooterSubsystem::startShooter));
+      driverXbox.rightTrigger(0.5).onTrue(Commands.runOnce(shooterSubsystem::startShooter));
       driverXbox.back().whileTrue(Commands.none());
-      driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      scoringXbox.rightBumper().onTrue(Commands.runOnce(shooterSubsystem::stopShooter));
+      driverXbox.b().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      driverXbox.leftBumper().onTrue(Commands.runOnce(intakeSubsytem::RaiseIntake));
+      driverXbox.leftTrigger().onTrue(Commands.runOnce(intakeSubsytem::LowerIntake));
+      driverXbox.rightBumper().onTrue(Commands.runOnce(shooterSubsystem::stopShooter));
+      driverXbox.y().whileTrue(drivebase.turnToAngle(90));
     }
 
   }

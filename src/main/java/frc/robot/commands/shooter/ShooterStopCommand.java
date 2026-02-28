@@ -1,3 +1,4 @@
+/*
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,3 +16,4 @@ public class ShooterStopCommand extends Command{
         RobotContainer.shooterSubsystem.stopShooter();
     }
 }
+    */

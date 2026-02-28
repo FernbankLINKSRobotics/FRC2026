@@ -333,13 +333,13 @@ public class Vision
   /**
    * Camera Enum to select each camera
    */
-  enum Cameras
+  public enum Cameras
   {
     /**
      * Left Camera
      */
     LEFT_CAM("left",
-             new Rotation3d(0, Math.toRadians(0), Math.toRadians(90)),
+             new Rotation3d(0, Math.toRadians(0), Math.toRadians(0)),
              new Translation3d(Units.inchesToMeters(12.056),
                                Units.inchesToMeters(10.981),
                                Units.inchesToMeters(18.0)),

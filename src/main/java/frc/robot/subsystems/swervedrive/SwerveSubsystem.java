@@ -246,11 +246,23 @@ public class SwerveSubsystem extends SubsystemBase
         var result = resultO.get();
         if (result.hasTargets())
         {
+          System.out.println(result.getBestTarget().getYaw());
           drive(getTargetSpeeds(0,
                                 0,
-                                Rotation2d.fromDegrees(result.getBestTarget()
-                                                             .getYaw()))); // Not sure if this will work, more math may be required.
+                                Rotation2d.fromDegrees(180-result.getBestTarget().getYaw()))); // Not sure if this will work, more math may be required.
         }
+      }
+    });
+  }
+
+  private boolean called= false;
+
+  public Command turnToAngle(double degrees)
+  {
+    return run(() -> {
+      if (!called) {
+        called = true;
+        drive(getTargetSpeeds(0, 0, Rotation2d.fromDegrees(degrees)));
       }
     });
   }
