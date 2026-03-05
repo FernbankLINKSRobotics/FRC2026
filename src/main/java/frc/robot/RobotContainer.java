@@ -36,9 +36,9 @@ public class RobotContainer
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final         CommandXboxController driverXbox = new CommandXboxController(0);
-  final         CommandXboxController scoringXbox = new CommandXboxController(1);
+  //final         CommandXboxController scoringXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
-  public final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve/maxSwerve_old"));
+  public final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve/maxSwerve"));
   public static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   public static final IntakeSubsystem intakeSubsytem = new IntakeSubsystem();
   //private Vision vision;

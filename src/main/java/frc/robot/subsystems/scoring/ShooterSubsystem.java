@@ -22,7 +22,7 @@ public class ShooterSubsystem extends SubsystemBase{
     }
 
     public void startShooter() {
-        leftShooterMotor.set(-0.8);
+        leftShooterMotor.set(0.6);
         //right shooter motor is follower
         //startIndexer();
     }
