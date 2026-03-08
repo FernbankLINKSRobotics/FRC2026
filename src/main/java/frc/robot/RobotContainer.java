@@ -35,7 +35,7 @@ public class RobotContainer
 {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  final         CommandXboxController driverXbox = new CommandXboxController(0);
+  public static final CommandXboxController driverXbox = new CommandXboxController(0);
   //final         CommandXboxController scoringXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
   public final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve/maxSwerve"));
@@ -181,8 +181,8 @@ public class RobotContainer
       driverXbox.rightTrigger(0.5).onTrue(Commands.runOnce(shooterSubsystem::startShooter));
       driverXbox.back().whileTrue(Commands.none());
       driverXbox.b().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.leftBumper().onTrue(Commands.runOnce(intakeSubsytem::RaiseIntake));
-      driverXbox.leftTrigger().onTrue(Commands.runOnce(intakeSubsytem::LowerIntake));
+      driverXbox.leftBumper().whileTrue(Commands.runOnce(intakeSubsytem::RaiseIntake));
+      driverXbox.leftTrigger().whileTrue(Commands.runOnce(intakeSubsytem::LowerIntake));
       driverXbox.rightBumper().onTrue(Commands.runOnce(shooterSubsystem::stopShooter));
       driverXbox.y().whileTrue(drivebase.turnToAngle(90));
     }
