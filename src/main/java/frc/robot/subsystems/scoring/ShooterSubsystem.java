@@ -1,9 +1,9 @@
 package frc.robot.subsystems.scoring;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -20,8 +20,8 @@ public class ShooterSubsystem extends SubsystemBase{
     //right shooter motor is set up as follower within SparkMax configs (REV Hardware Client)
     private SparkMax indexerMotor;
     private SparkClosedLoopController leftShooterController;
-    private SparkFlexConfig leftShooterConfigs;
-    public int RPMs;
+    private SparkMaxConfig leftShooterConfigs;
+    public int RPMs = 1000;
     //private final SparkMax hoodMotor;
 
     public ShooterSubsystem() {
@@ -29,12 +29,13 @@ public class ShooterSubsystem extends SubsystemBase{
         //shooterHallSensor = leftShooterMotor.getEncoder();
         //right shooter motor is follower
         indexerMotor = new SparkMax(14, MotorType.kBrushed);
-        leftShooterController = leftShooterMotor.getClosedLoopController();
-        leftShooterConfigs = new SparkFlexConfig();
-        setPIDConfigs();
+        //leftShooterController = leftShooterMotor.getClosedLoopController();
+        //leftShooterConfigs = new SparkMaxConfig();
+        //setPIDConfigs();
         //hoodMotor = new SparkMax(14, MotorType.kBrushless);
     }
 
+    /*
     public void setPIDConfigs() {
         leftShooterConfigs.closedLoop
             .p(0.1)
@@ -44,34 +45,38 @@ public class ShooterSubsystem extends SubsystemBase{
         leftShooterMotor.configure(leftShooterConfigs, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         DriverStation.reportWarning(("PID configs initialized in subsystem with name: " + getName()), false);
     }
+    */
 
-    public void startShooter() {
-        leftShooterController.setSetpoint(RPMs, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        //right shooter motor is follower
-        //startIndexer();
+    public Command startShooter() {
+        return runEnd(
+            //() -> leftShooterController.setSetpoint(RPMs, ControlType.kPosition, ClosedLoopSlot.kSlot0),
+            () -> leftShooterMotor.set(0.5),
+            () -> startIndexer());
     }
 
-    public void stopShooter() {
-        leftShooterController.setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        //right shooter motor is follower
-        //stopIndexer();
+    public Command stopShooter() {
+        return runEnd(
+            () -> stopIndexer(),
+            () -> leftShooterMotor.set(0.0)
+            //() -> leftShooterController.setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0)
+            );
     }
 
     public void startIndexer() {
-        //indexerMotor.set(1.0);
+        indexerMotor.set(1.0);
     }
 
     public void stopIndexer() {
-        //indexerMotor.set(0.0);
+        indexerMotor.set(0.0);
     }
 
+    /*
     private int getShooterRPMs() {
         int RPM = 0;
         
         return RPM;
     }
 
-    /*
     private double distanceToHub() {
         double distance = 0.0;
         
@@ -79,21 +84,22 @@ public class ShooterSubsystem extends SubsystemBase{
     }
     */
 
+    /*
     public void increaseDistance() {
         if (RPMs < 3000) {
-            leftShooterController.setSetpoint(RPMs, ControlType.kPosition, ClosedLoopSlot.kSlot0);
             RPMs += 500;
+            leftShooterController.setSetpoint(RPMs, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         }
     }
 
     public void decreaseDistance() {
         if (RPMs > 0) {
-            leftShooterController.setSetpoint(RPMs, ControlType.kPosition, ClosedLoopSlot.kSlot0);
             RPMs -= 500;
+            leftShooterController.setSetpoint(RPMs, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         }
     }
 
-    /*
+    
     public void adjustHoodUp() {
         hoodMotor.set(1.0);
     }
