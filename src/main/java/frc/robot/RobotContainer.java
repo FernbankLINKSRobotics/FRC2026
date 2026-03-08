@@ -185,6 +185,8 @@ public class RobotContainer
       driverXbox.leftTrigger().onTrue(Commands.runOnce(intakeSubsytem::LowerIntake));
       driverXbox.rightBumper().onTrue(Commands.runOnce(shooterSubsystem::stopShooter));
       driverXbox.y().whileTrue(drivebase.turnToAngle(90));
+      driverXbox.povUp().onTrue(Commands.runOnce(shooterSubsystem::increaseDistance));
+      driverXbox.povDown().onTrue(Commands.runOnce(shooterSubsystem::decreaseDistance));
     }
 
   }

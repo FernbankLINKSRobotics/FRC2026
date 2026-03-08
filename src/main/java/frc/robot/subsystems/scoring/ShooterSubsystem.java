@@ -1,5 +1,6 @@
 package frc.robot.subsystems.scoring;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -20,6 +21,7 @@ public class ShooterSubsystem extends SubsystemBase{
     private SparkMax indexerMotor;
     private SparkClosedLoopController leftShooterController;
     private SparkFlexConfig leftShooterConfigs;
+    public int RPMs;
     //private final SparkMax hoodMotor;
 
     public ShooterSubsystem() {
@@ -40,16 +42,17 @@ public class ShooterSubsystem extends SubsystemBase{
             .d(0.1)
             .outputRange(0.0, 1.0);
         leftShooterMotor.configure(leftShooterConfigs, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        DriverStation.reportWarning(("PID configs initialized in subsystem with name: " + getName()), false);
     }
 
     public void startShooter() {
-        leftShooterController.setSetpoint(1000, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        leftShooterController.setSetpoint(RPMs, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         //right shooter motor is follower
         //startIndexer();
     }
 
     public void stopShooter() {
-        leftShooterMotor.set(0.0);
+        leftShooterController.setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         //right shooter motor is follower
         //stopIndexer();
     }
@@ -68,10 +71,26 @@ public class ShooterSubsystem extends SubsystemBase{
         return RPM;
     }
 
+    /*
     private double distanceToHub() {
         double distance = 0.0;
         
         return distance;
+    }
+    */
+
+    public void increaseDistance() {
+        if (RPMs < 3000) {
+            leftShooterController.setSetpoint(RPMs, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+            RPMs += 500;
+        }
+    }
+
+    public void decreaseDistance() {
+        if (RPMs > 0) {
+            leftShooterController.setSetpoint(RPMs, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+            RPMs -= 500;
+        }
     }
 
     /*
