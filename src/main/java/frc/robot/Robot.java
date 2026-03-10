@@ -13,10 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.subsystems.scoring.IntakeSubsystem;
-import frc.robot.subsystems.scoring.ShooterSubsystem;
 
 
 /**
@@ -29,8 +25,6 @@ public class Robot extends TimedRobot
 
   private static Robot   instance;
   private        Command m_autonomousCommand;
-
-  private Boolean autoDone;
 
   private RobotContainer m_robotContainer;
 
@@ -92,7 +86,6 @@ public class Robot extends TimedRobot
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     //System.out.println(m_robotContainer.drivebase.getSwerveVision().getDistanceFromAprilTag(24));
-    SmartDashboard.putBoolean("Intake enable status", IntakeSubsystem.intakePower);
   }
 
   /**
@@ -138,22 +131,7 @@ public class Robot extends TimedRobot
    */
   @Override
   public void autonomousPeriodic()
-  {
-    try {
-      if (autoDone || m_autonomousCommand != null) //if we already finished this, or we are using a selected auto command, don't run this stuff
-        return;
-
-      if (m_chooser.getSelected() == "Simple Shoot Long") {
-        Thread.sleep(5000);
-      } else if (m_chooser.getSelected() == "Simple Shoot Medium") {
-        Thread.sleep(5000);
-      } else if (m_chooser.getSelected() == "Simple Shoot Short") {
-
-      }
-
-      autoDone = true;
-    } catch (Exception e) {}
-  }
+  { }
 
   @Override
   public void teleopInit()

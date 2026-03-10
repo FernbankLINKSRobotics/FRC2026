@@ -114,8 +114,8 @@ public class RobotContainer
       driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       driverXbox.x().onTrue(Commands.runOnce(intakeSubsytem::toggleIntake));
 
-      driverXbox.rightTrigger(0.5).whileTrue(shooterSubsystem.startShooter());
-      driverXbox.rightBumper().whileTrue(shooterSubsystem.stopShooter());
+      driverXbox.rightTrigger(0.5).whileTrue(shooterSubsystem.toggleShooter());
+      driverXbox.rightBumper().whileTrue(shooterSubsystem.toggleIndexer());
 
       driverXbox.leftBumper().whileTrue(intakeSubsytem.raiseIntake());
       driverXbox.leftTrigger().whileTrue(intakeSubsytem.lowerIntake());

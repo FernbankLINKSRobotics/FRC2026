@@ -22,6 +22,8 @@ public class ShooterSubsystem extends SubsystemBase{
     private SparkClosedLoopController leftShooterController;
     private SparkMaxConfig leftShooterConfigs;
     public int RPMs = 1000;
+    public Boolean shooterPower = false;
+    public Boolean indexerPower = false;
     //private final SparkMax hoodMotor;
 
     public ShooterSubsystem() {
@@ -29,38 +31,56 @@ public class ShooterSubsystem extends SubsystemBase{
         //shooterHallSensor = leftShooterMotor.getEncoder();
         //right shooter motor is follower
         indexerMotor = new SparkMax(14, MotorType.kBrushed);
-        //leftShooterController = leftShooterMotor.getClosedLoopController();
-        //leftShooterConfigs = new SparkMaxConfig();
-        //setPIDConfigs();
+        leftShooterController = leftShooterMotor.getClosedLoopController();
+        leftShooterConfigs = new SparkMaxConfig();
+        setPIDConfigs();
         //hoodMotor = new SparkMax(14, MotorType.kBrushless);
     }
 
-    /*
     public void setPIDConfigs() {
         leftShooterConfigs.closedLoop
-            .p(0.1)
+            .p(0.5)
             .i(0.0)
             .d(0.1)
             .outputRange(0.0, 1.0);
         leftShooterMotor.configure(leftShooterConfigs, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         DriverStation.reportWarning(("PID configs initialized in subsystem with name: " + getName()), false);
     }
-    */
 
-    public Command startShooter() {
+    public Command toggleShooter() {
         return runEnd(
-            //() -> leftShooterController.setSetpoint(RPMs, ControlType.kPosition, ClosedLoopSlot.kSlot0),
-            () -> leftShooterMotor.set(0.5),
-            () -> startIndexer());
+            () -> toggleShoot(),
+            () -> nothing());
     }
 
-    public Command stopShooter() {
+    public Command toggleIndexer() {
         return runEnd(
-            () -> stopIndexer(),
-            () -> leftShooterMotor.set(0.0)
-            //() -> leftShooterController.setSetpoint(0, ControlType.kPosition, ClosedLoopSlot.kSlot0)
-            );
+            () -> toggleIndex(),
+            () -> nothing());
     }
+
+    public void toggleShoot() {
+        if (shooterPower) {
+            leftShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+            shooterPower = !shooterPower;
+        } else {
+            leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+            shooterPower = !shooterPower;
+        }
+    }
+
+    public void toggleIndex() {
+        if (indexerPower) {
+            indexerMotor.set(1.0);
+            indexerPower = !indexerPower;
+        } else {
+            indexerMotor.set(0.0);
+            indexerPower = !indexerPower;
+        }
+    }
+
+    // placeholder for end of toggle commands
+    public void nothing() {}
 
     public void startIndexer() {
         indexerMotor.set(1.0);
