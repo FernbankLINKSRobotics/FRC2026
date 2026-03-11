@@ -11,32 +11,27 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.ResetMode;
 import com.revrobotics.PersistMode;
-//import com.revrobotics.RelativeEncoder;
-//import com.revrobotics.spark.SparkAbsoluteEncoder;
 
 public class ShooterSubsystem extends SubsystemBase{
     private SparkMax leftShooterMotor;
-    //private final RelativeEncoder shooterHallSensor;
-    //right shooter motor is set up as follower within SparkMax configs (REV Hardware Client)
     private SparkMax indexerMotor;
     private SparkClosedLoopController leftShooterController;
     private SparkMaxConfig leftShooterConfigs;
     public int RPMs = 1000;
     public Boolean shooterPower = false;
     public Boolean indexerPower = false;
-    //private final SparkMax hoodMotor;
 
     public ShooterSubsystem() {
         leftShooterMotor = new SparkMax(2, MotorType.kBrushless);
-        //shooterHallSensor = leftShooterMotor.getEncoder();
-        //right shooter motor is follower
         indexerMotor = new SparkMax(14, MotorType.kBrushed);
         leftShooterController = leftShooterMotor.getClosedLoopController();
         leftShooterConfigs = new SparkMaxConfig();
         setPIDConfigs();
-        //hoodMotor = new SparkMax(14, MotorType.kBrushless);
     }
 
+    /**
+     * Initialize and apply PID and output-range settings for the left shooter closed-loop controller.
+     */
     public void setPIDConfigs() {
         leftShooterConfigs.closedLoop
             .p(0.5)
@@ -47,20 +42,31 @@ public class ShooterSubsystem extends SubsystemBase{
         DriverStation.reportWarning(("PID configs initialized in subsystem with name: " + getName()), false);
     }
 
+    /**
+     * Creates and returns a command which toggles the shooter's state when the command is initialized and performs no action when the command ends.
+     * @see #toggleShoot()
+     */
     public Command toggleShooter() {
-        return runEnd(
+        return startEnd(
             () -> toggleShoot(),
             () -> nothing());
     }
 
+    /**
+     * Creates and returns a command that toggles the indexer mechanism.
+     * @see #toggleIndex()
+     */
     public Command toggleIndexer() {
-        return runEnd(
+        return startEnd(
             () -> toggleIndex(),
             () -> nothing());
     }
 
+    /**
+     * Toggle the shooter's power state and updates the left shooter controller setpoint.
+     */
     public void toggleShoot() {
-        if (shooterPower) {
+        if (!shooterPower) {
             leftShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
             shooterPower = !shooterPower;
         } else {
@@ -69,8 +75,11 @@ public class ShooterSubsystem extends SubsystemBase{
         }
     }
 
+    /**
+     * Toggles the indexer between running and stopped.
+     */
     public void toggleIndex() {
-        if (indexerPower) {
+        if (!indexerPower) {
             indexerMotor.set(1.0);
             indexerPower = !indexerPower;
         } else {
@@ -79,53 +88,9 @@ public class ShooterSubsystem extends SubsystemBase{
         }
     }
 
-    // placeholder for end of toggle commands
+    /**
+     * No-operation placeholder method.
+     */
     public void nothing() {}
 
-    public void startIndexer() {
-        indexerMotor.set(1.0);
-    }
-
-    public void stopIndexer() {
-        indexerMotor.set(0.0);
-    }
-
-    /*
-    private int getShooterRPMs() {
-        int RPM = 0;
-        
-        return RPM;
-    }
-
-    private double distanceToHub() {
-        double distance = 0.0;
-        
-        return distance;
-    }
-    */
-
-    /*
-    public void increaseDistance() {
-        if (RPMs < 3000) {
-            RPMs += 500;
-            leftShooterController.setSetpoint(RPMs, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        }
-    }
-
-    public void decreaseDistance() {
-        if (RPMs > 0) {
-            RPMs -= 500;
-            leftShooterController.setSetpoint(RPMs, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        }
-    }
-
-    
-    public void adjustHoodUp() {
-        hoodMotor.set(1.0);
-    }
-
-    public void adjustHoodDown() {
-        hoodMotor.set(0.0);
-    }
-    */
 }
