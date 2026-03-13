@@ -12,6 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.scoring.ShooterSubsystem;
 import edu.wpi.first.cameraserver.CameraServer;
 
 
@@ -26,6 +30,8 @@ public class Robot extends TimedRobot
   private static Robot   instance;
   private        Command m_autonomousCommand;
 
+  private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+
   private RobotContainer m_robotContainer;
 
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -35,7 +41,6 @@ public class Robot extends TimedRobot
   public Robot()
   {
     instance = this;
-    
   }
 
   public static Robot getInstance()
@@ -59,9 +64,10 @@ public class Robot extends TimedRobot
 
     CameraServer.startAutomaticCapture();
 
-    m_chooser.setDefaultOption("goClimb", "goClimb");
+    m_chooser.addOption("goClimb", "goClimb");
     m_chooser.addOption("pidTest1", "pidTest1");
     m_chooser.addOption("turn", "turn");
+    m_chooser.setDefaultOption("Simple", "Simple");
     SmartDashboard.putData("Auto Start Choices", m_chooser);
 
     if (isSimulation())
@@ -97,6 +103,7 @@ public class Robot extends TimedRobot
     m_robotContainer.setMotorBrake(true);
     disabledTimer.reset();
     disabledTimer.start();
+    Commands.runOnce(shooterSubsystem::disableShooter, shooterSubsystem);
   }
 
   @Override
@@ -123,6 +130,14 @@ public class Robot extends TimedRobot
     if (m_autonomousCommand != null)
     {
       m_autonomousCommand.schedule();
+    } else if (m_chooser.getSelected() == "Simple auto") {
+      m_autonomousCommand = new SequentialCommandGroup(
+        new ShooterSubsystem().toggleShooter(),
+        new WaitCommand(1),
+        new ShooterSubsystem().toggleIndexer(),
+        new WaitCommand(5),
+        new ShooterSubsystem().toggleIndexer(),
+        new ShooterSubsystem().toggleShooter());
     }
   }
 
