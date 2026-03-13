@@ -52,8 +52,8 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     public Command powerIntake() {
-        return runEnd(
-            () -> intakeMotor.set(0.1),
+        return startEnd(
+            () -> intakeMotor.set(-0.5),
             () -> intakeMotor.set(0.0));
     }
 }

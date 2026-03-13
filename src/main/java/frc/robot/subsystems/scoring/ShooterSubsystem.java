@@ -54,7 +54,6 @@ public class ShooterSubsystem extends SubsystemBase{
         DriverStation.reportWarning(("PID configs initialized in subsystem with name: " + getName()), false);
     }
 
-
     /**
      * Command to disable the shooter motors.
      */
