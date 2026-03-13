@@ -18,7 +18,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public IntakeSubsystem() {
         intakeMovementMotor = new SparkMax(7, MotorType.kBrushed);
-        intakeMotor = new TalonFX(9, kCANBus);
+        intakeMotor = new TalonFX(10, kCANBus);
     }
 
     /**
@@ -26,7 +26,7 @@ public class IntakeSubsystem extends SubsystemBase{
      */
     public void toggleIntake() {
         if (intakePower) {
-            intakeMotor.set(1.0);
+            intakeMotor.set(0.1);
         } else {
             intakeMotor.set(0.0);
         }
