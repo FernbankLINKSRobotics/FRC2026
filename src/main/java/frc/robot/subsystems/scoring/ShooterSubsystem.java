@@ -14,18 +14,24 @@ import com.revrobotics.PersistMode;
 
 public class ShooterSubsystem extends SubsystemBase{
     private SparkMax leftShooterMotor;
+    private SparkMax rightShooterMotor;
     private SparkMax indexerMotor;
     private SparkClosedLoopController leftShooterController;
     private SparkMaxConfig leftShooterConfigs;
+    private SparkClosedLoopController rightShooterController;
+    private SparkMaxConfig rightShooterConfigs;
     public int RPMs = 1000;
     public Boolean shooterPower = false;
     public Boolean indexerPower = false;
 
     public ShooterSubsystem() {
         leftShooterMotor = new SparkMax(2, MotorType.kBrushless);
+        rightShooterMotor = new SparkMax(13, MotorType.kBrushless);
         indexerMotor = new SparkMax(14, MotorType.kBrushed);
         leftShooterController = leftShooterMotor.getClosedLoopController();
         leftShooterConfigs = new SparkMaxConfig();
+        rightShooterController = rightShooterMotor.getClosedLoopController();
+        rightShooterConfigs = new SparkMaxConfig();
         setPIDConfigs();
     }
 
@@ -39,53 +45,57 @@ public class ShooterSubsystem extends SubsystemBase{
             .d(0.1)
             .outputRange(0.0, 1.0);
         leftShooterMotor.configure(leftShooterConfigs, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        rightShooterConfigs.closedLoop
+            .p(0.5)
+            .i(0.0)
+            .d(0.1)
+            .outputRange(0.0, 1.0);
+        rightShooterMotor.configure(rightShooterConfigs, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         DriverStation.reportWarning(("PID configs initialized in subsystem with name: " + getName()), false);
     }
 
-    /**
-     * Creates and returns a command which toggles the shooter's state when the command is initialized and performs no action when the command ends.
-     * @see #toggleShoot()
-     */
-    public Command toggleShooter() {
-        return startEnd(
-            () -> toggleShoot(),
-            () -> nothing());
-    }
 
     /**
-     * Creates and returns a command that toggles the indexer mechanism.
-     * @see #toggleIndex()
+     * Command to disable the shooter motors.
      */
-    public Command toggleIndexer() {
-        return startEnd(
-            () -> toggleIndex(),
-            () -> nothing());
+    public Command disableShooter() {
+        return runOnce(() -> {
+            leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+            rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+            shooterPower = false;
+        });
     }
 
     /**
      * Toggle the shooter's power state and updates the left shooter controller setpoint.
      */
-    public void toggleShoot() {
-        if (!shooterPower) {
-            leftShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-            shooterPower = !shooterPower;
-        } else {
-            leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-            shooterPower = !shooterPower;
-        }
+    public Command toggleShooter() {
+        return runOnce(() -> {
+            if (!shooterPower) {
+                leftShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                rightShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                shooterPower = true;
+            } else {
+                leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                shooterPower = false;
+            }
+        });
     }
 
     /**
      * Toggles the indexer between running and stopped.
      */
-    public void toggleIndex() {
-        if (!indexerPower) {
-            indexerMotor.set(1.0);
-            indexerPower = !indexerPower;
-        } else {
-            indexerMotor.set(0.0);
-            indexerPower = !indexerPower;
-        }
+    public Command toggleIndexer() {
+        return runOnce(() -> {
+            if (!indexerPower) {
+                indexerMotor.set(1.0);
+                indexerPower = !indexerPower;
+            } else {
+                indexerMotor.set(0.0);
+                indexerPower = !indexerPower;
+            }
+        });
     }
 
     /**
