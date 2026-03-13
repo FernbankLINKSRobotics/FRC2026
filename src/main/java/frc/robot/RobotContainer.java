@@ -36,7 +36,6 @@ public class RobotContainer
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public static final CommandXboxController driverXbox = new CommandXboxController(0);
-  //final         CommandXboxController scoringXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
   public final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve/maxSwerve"));
   public static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
@@ -89,7 +88,7 @@ public class RobotContainer
   private void configureBindings()
   {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
-    //Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
+    Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
     
     //Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
     //Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
@@ -97,8 +96,9 @@ public class RobotContainer
     //Command driveFieldOrientedAnglularVelocityKeyboard = drivebase.driveFieldOriented(driveAngularVelocityKeyboard);
     //Command driveSetpointGenKeyboard = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngleKeyboard);
 
-    drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-
+    //drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity);
+    
     if (DriverStation.isTest())
     {
       drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!

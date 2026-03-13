@@ -30,8 +30,6 @@ public class Robot extends TimedRobot
   private static Robot   instance;
   private        Command m_autonomousCommand;
 
-  private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-
   private RobotContainer m_robotContainer;
 
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -103,7 +101,6 @@ public class Robot extends TimedRobot
     m_robotContainer.setMotorBrake(true);
     disabledTimer.reset();
     disabledTimer.start();
-    Commands.runOnce(shooterSubsystem::disableShooter, shooterSubsystem);
   }
 
   @Override

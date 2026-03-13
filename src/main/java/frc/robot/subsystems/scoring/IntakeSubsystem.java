@@ -26,7 +26,7 @@ public class IntakeSubsystem extends SubsystemBase{
      */
     public void toggleIntake() {
         if (intakePower) {
-            intakeMotor.set(0.1);
+            intakeMotor.set(0.);
         } else {
             intakeMotor.set(0.0);
         }
@@ -49,5 +49,11 @@ public class IntakeSubsystem extends SubsystemBase{
         return runEnd(
             () -> intakeMovementMotor.set(-1.0),
             () -> intakeMovementMotor.set(0.0));
+    }
+
+    public Command powerIntake() {
+        return runEnd(
+            () -> intakeMotor.set(0.1),
+            () -> intakeMotor.set(0.0));
     }
 }
