@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.scoring.IntakeSubsystem;
+//import frc.robot.subsystems.scoring.IntakeSubsystem;
 import frc.robot.subsystems.scoring.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
@@ -39,15 +39,15 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   public final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve/maxSwerve"));
   public static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  public static final IntakeSubsystem intakeSubsytem = new IntakeSubsystem();
+  //public static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   //private Vision vision;
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
    */
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                                () -> driverXbox.getLeftY() * -1,
-                                                                () -> driverXbox.getLeftX() * -1)
+                                                                () -> driverXbox.getLeftY(),
+                                                                () -> driverXbox.getLeftX())
                                                             .withControllerRotationAxis(driverXbox::getRightX)
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(0.8)
@@ -88,7 +88,7 @@ public class RobotContainer
   private void configureBindings()
   {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
-    Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
+    //Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
     
     //Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
     //Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
@@ -96,8 +96,8 @@ public class RobotContainer
     //Command driveFieldOrientedAnglularVelocityKeyboard = drivebase.driveFieldOriented(driveAngularVelocityKeyboard);
     //Command driveSetpointGenKeyboard = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngleKeyboard);
 
-    //drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-    drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity);
+    drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    //drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity);
 
     if (DriverStation.isTest())
     {
@@ -112,16 +112,16 @@ public class RobotContainer
 
     } else {
       driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverXbox.x().whileTrue(intakeSubsytem.powerIntake());
+      //driverXbox.b().whileTrue(intakeSubsystem.powerIntake());
 
-      driverXbox.rightTrigger(0.5).whileTrue(shooterSubsystem.toggleShooter());
-      driverXbox.rightBumper().whileTrue(shooterSubsystem.toggleIndexer());
+      driverXbox.rightTrigger(0.5).whileTrue(shooterSubsystem.runIndexer());
+      driverXbox.rightBumper().whileTrue(shooterSubsystem.toggleShooter());
 
-      driverXbox.leftBumper().whileTrue(intakeSubsytem.raiseIntake());
-      driverXbox.leftTrigger().whileTrue(intakeSubsytem.lowerIntake());
+      //driverXbox.leftBumper().whileTrue(intakeSubsystem.raiseIntake());
+      //driverXbox.leftTrigger().whileTrue(intakeSubsystem.lowerIntake());
 
       //driverXbox.back().whileTrue(Commands.none());
-      driverXbox.b().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverXbox.y().whileTrue(drivebase.turnToAngle(90));
       //driverXbox.povUp().onTrue(Commands.runOnce(shooterSubsystem::increaseDistance));
       //driverXbox.povDown().onTrue(Commands.runOnce(shooterSubsystem::decreaseDistance));
@@ -134,6 +134,7 @@ public class RobotContainer
    *
    * @return the command to run in autonomous
    */
+  /*
   public Command getAutonomousCommand(String choice)
   {
     // An example command will be run in autonomous
@@ -141,8 +142,8 @@ public class RobotContainer
             return null;
     
     return drivebase.getAutonomousCommand(choice);
-  }
-
+  
+  */
   public void setMotorBrake(boolean brake)
   {
     drivebase.setMotorBrake(brake);

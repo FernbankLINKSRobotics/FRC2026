@@ -11,12 +11,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.scoring.IntakeSubsystem;
-import frc.robot.subsystems.scoring.ShooterSubsystem;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.cameraserver.CameraServer;
 
 
@@ -30,9 +26,6 @@ public class Robot extends TimedRobot
 
   private static Robot   instance;
   private        Command m_autonomousCommand;
-
-  private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  private IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
   private RobotContainer m_robotContainer;
 
@@ -69,7 +62,7 @@ public class Robot extends TimedRobot
     m_chooser.addOption("goClimb", "goClimb");
     m_chooser.addOption("pidTest1", "pidTest1");
     m_chooser.addOption("turn", "turn");
-    m_chooser.setDefaultOption("Simple", "Simple");
+    m_chooser.setDefaultOption("Simple auto", "Simple auto");
     SmartDashboard.putData("Auto Start Choices", m_chooser);
 
     if (isSimulation())
@@ -105,8 +98,8 @@ public class Robot extends TimedRobot
     m_robotContainer.setMotorBrake(true);
     disabledTimer.reset();
     disabledTimer.start();
-    Commands.runOnce(shooterSubsystem::disableShooter, shooterSubsystem);
-    Commands.runOnce(intakeSubsystem::disableIntake, intakeSubsystem);
+    //Commands.runOnce(shooterSubsystem::disableShooter, shooterSubsystem);
+    //Commands.runOnce(intakeSubsystem::disableIntake, intakeSubsystem);
   }
 
   @Override
@@ -126,24 +119,29 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit()
   {
+    /*
     m_robotContainer.setMotorBrake(true);
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand(m_chooser.getSelected());
-
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand(m_chooser.getSelected());/
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null)
     {
       m_autonomousCommand.schedule();
-    } else if (m_chooser.getSelected() == "Simple auto") {
-      m_autonomousCommand = new SequentialCommandGroup(
-        new ShooterSubsystem().toggleShooter(),
-        new WaitCommand(1),
-        new ShooterSubsystem().toggleIndexer(),
-        new IntakeSubsystem().intakeAuto(),
-        new WaitCommand(5),
-        new ShooterSubsystem().toggleIndexer(),
-        new ShooterSubsystem().toggleShooter());
-    }
-    m_autonomousCommand.schedule();
+    } else if (m_chooser.getSelected() == "Simple auto") {*/
+      try {
+        Commands.runOnce(() -> RobotContainer.shooterSubsystem.toggleShooter());
+        Thread.sleep(1000);
+        Commands.runOnce(() -> RobotContainer.shooterSubsystem.toggleIndexer());
+        //RobotContainer.intakeSubsystem.intakeAuto();
+        //Commands.runOnce(() -> RobotContainer.intakeSubsystem.toggleIntake());
+        Thread.sleep(5000);
+        Commands.runOnce(() -> RobotContainer.shooterSubsystem.toggleIndexer());
+        Commands.runOnce(() -> RobotContainer.shooterSubsystem.toggleShooter());
+        //Commands.runOnce(() -> RobotContainer.intakeSubsystem.toggleIntake());
+      } catch (Exception e) {
+        // TODO: handle exception
+      }
+    //}
+    //m_autonomousCommand.schedule();
   }
 
   /**

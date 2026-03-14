@@ -1,25 +1,25 @@
 package frc.robot.subsystems.scoring;
 
-import edu.wpi.first.wpilibj.DriverStation;
+//import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkClosedLoopController;
+//import com.revrobotics.spark.ClosedLoopSlot;
+//import com.revrobotics.spark.SparkBase.ControlType;
+//import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.ResetMode;
-import com.revrobotics.PersistMode;
+//import com.revrobotics.spark.config.SparkMaxConfig;
+//import com.revrobotics.ResetMode;
+//import com.revrobotics.PersistMode;
 
 public class ShooterSubsystem extends SubsystemBase{
     private SparkMax leftShooterMotor;
     private SparkMax rightShooterMotor;
-    private SparkMax indexerMotor;
+    private SparkMax indexerMotor;/*
     private SparkClosedLoopController leftShooterController;
     private SparkMaxConfig leftShooterConfigs;
     private SparkClosedLoopController rightShooterController;
-    private SparkMaxConfig rightShooterConfigs;
+    private SparkMaxConfig rightShooterConfigs;*/
     public int RPMs = 1000;
     public Boolean shooterPower = false;
     public Boolean indexerPower = false;
@@ -28,16 +28,19 @@ public class ShooterSubsystem extends SubsystemBase{
         leftShooterMotor = new SparkMax(2, MotorType.kBrushless);
         rightShooterMotor = new SparkMax(13, MotorType.kBrushless);
         indexerMotor = new SparkMax(14, MotorType.kBrushed);
+        /*
         leftShooterController = leftShooterMotor.getClosedLoopController();
         leftShooterConfigs = new SparkMaxConfig();
         rightShooterController = rightShooterMotor.getClosedLoopController();
-        rightShooterConfigs = new SparkMaxConfig();
-        setPIDConfigs();
+        rightShooterConfigs = new SparkMaxConfig();*/
+        //setPIDConfigs();
     }
 
     /**
      * Initialize and apply PID and output-range settings for the left shooter closed-loop controller.
      */
+
+    /*
     public void setPIDConfigs() {
         leftShooterConfigs.closedLoop
             .p(0.5)
@@ -52,15 +55,17 @@ public class ShooterSubsystem extends SubsystemBase{
             .outputRange(0.0, 1.0);
         rightShooterMotor.configure(rightShooterConfigs, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         DriverStation.reportWarning(("PID configs initialized in subsystem with name: " + getName()), false);
-    }
+    }*/
 
     /**
      * Command to disable the shooter motors.
      */
     public Command disableShooter() {
         return runOnce(() -> {
-            leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-            rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+            //leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+            //rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+            leftShooterMotor.set(0);
+            rightShooterMotor.set(0);
             shooterPower = false;
         });
     }
@@ -71,13 +76,17 @@ public class ShooterSubsystem extends SubsystemBase{
     public Command toggleShooter() {
         return runOnce(() -> {
             if (!shooterPower) {
-                leftShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                rightShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                //leftShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                //rightShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                leftShooterMotor.set(0.6);
+                rightShooterMotor.set(0.6);
                 shooterPower = true;
             } else {
-                leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                shooterPower = false;
+                //leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                //rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                leftShooterMotor.set(0);
+                rightShooterMotor.set(0);
+               shooterPower = false;
             }
         });
     }
@@ -95,6 +104,13 @@ public class ShooterSubsystem extends SubsystemBase{
                 indexerPower = !indexerPower;
             }
         });
+    }
+
+    public Command runIndexer() {
+        return startEnd(
+            () -> indexerMotor.set(1.0),
+            () -> indexerMotor.set(0.0)
+        );
     }
 
     /**
