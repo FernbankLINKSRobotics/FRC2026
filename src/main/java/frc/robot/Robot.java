@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.scoring.IntakeSubsystem;
 import frc.robot.subsystems.scoring.ShooterSubsystem;
 import edu.wpi.first.cameraserver.CameraServer;
 
@@ -31,6 +32,7 @@ public class Robot extends TimedRobot
   private        Command m_autonomousCommand;
 
   private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
   private RobotContainer m_robotContainer;
 
@@ -104,6 +106,7 @@ public class Robot extends TimedRobot
     disabledTimer.reset();
     disabledTimer.start();
     Commands.runOnce(shooterSubsystem::disableShooter, shooterSubsystem);
+    Commands.runOnce(intakeSubsystem::disableIntake, intakeSubsystem);
   }
 
   @Override
@@ -135,10 +138,12 @@ public class Robot extends TimedRobot
         new ShooterSubsystem().toggleShooter(),
         new WaitCommand(1),
         new ShooterSubsystem().toggleIndexer(),
+        new IntakeSubsystem().intakeAuto(),
         new WaitCommand(5),
         new ShooterSubsystem().toggleIndexer(),
         new ShooterSubsystem().toggleShooter());
     }
+    m_autonomousCommand.schedule();
   }
 
   /**
