@@ -36,6 +36,21 @@ public class ShooterSubsystem extends SubsystemBase{
         //setPIDConfigs();
     }
 
+    public void AutoShoot() {
+        try {
+            leftShooterMotor.set(0.6);
+            rightShooterMotor.set(0.6);
+            Thread.sleep(2000);
+            indexerMotor.set(1.0);
+            Thread.sleep(5000);
+            leftShooterMotor.set(0);
+            rightShooterMotor.set(0);
+            indexerMotor.set(0);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
     /**
      * Initialize and apply PID and output-range settings for the left shooter closed-loop controller.
      */

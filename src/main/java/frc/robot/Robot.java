@@ -119,30 +119,7 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit()
   {
-    Commands.runOnce(() -> RobotContainer.shooterSubsystem.toggleShooter());
-    /*
-    m_robotContainer.setMotorBrake(true);
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand(m_chooser.getSelected());/
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null)
-    {
-      m_autonomousCommand.schedule();
-    } else if (m_chooser.getSelected() == "Simple auto") {
-      try {
-        Commands.runOnce(() -> RobotContainer.shooterSubsystem.toggleShooter());
-        Thread.sleep(1000);
-        Commands.runOnce(() -> RobotContainer.shooterSubsystem.toggleIndexer());
-        //RobotContainer.intakeSubsystem.intakeAuto();
-        //Commands.runOnce(() -> RobotContainer.intakeSubsystem.toggleIntake());
-        Thread.sleep(5000);
-        Commands.runOnce(() -> RobotContainer.shooterSubsystem.toggleIndexer());
-        Commands.runOnce(() -> RobotContainer.shooterSubsystem.toggleShooter());
-        //Commands.runOnce(() -> RobotContainer.intakeSubsystem.toggleIntake());
-      } catch (Exception e) {
-        // TODO: handle exception
-      }*/
-    //}
-    //m_autonomousCommand.schedule();
+    RobotContainer.shooterSubsystem.AutoShoot();
   }
 
   /**
