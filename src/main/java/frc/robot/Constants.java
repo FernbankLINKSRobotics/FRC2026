@@ -49,6 +49,22 @@ public final class Constants
     public static final double TURN_CONSTANT    = 6;
   }
 
+  public static class sparkIds {
+    public static final int kFrontLeftDrive = 5;
+    public static final int kFrontLeftAngle = 6;
+    public static final int kFrontRightDrive = 9;
+    public static final int kFrontRightAngle = 8;
+    public static final int kBackRightDrive = 11;
+    public static final int kBackRightAngle = 12;
+    public static final int kBackLeftDrive = 4;
+    public static final int kBackLeftAngle = 3;
+    public static final int kIntakeMovementMotor = 7;
+    public static final int kIntakeRoller = 10;
+    public static final int kIndexer = 14;
+    public static final int kLeftShooter = 2;
+    public static final int kRightShooter = 13;
+  }
+
   public static class FeedForwardConstants_Old
   {
     public static class BackLeft

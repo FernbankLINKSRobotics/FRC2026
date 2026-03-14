@@ -28,7 +28,7 @@ public class IntakeSubsystem extends SubsystemBase{
      */
     public void toggleIntake() {
         if (intakePower) {
-            intakeMotor.set(1.0);
+            intakeMotor.set(0.1);
         } else {
             intakeMotor.set(0.0);
         }
@@ -63,6 +63,7 @@ public class IntakeSubsystem extends SubsystemBase{
             () -> intakeMovementMotor.set(0.0));
     }
 
+<<<<<<< HEAD
     /**
      * Command for the intake to run during the basic auto
      */
@@ -77,5 +78,13 @@ public class IntakeSubsystem extends SubsystemBase{
                 DriverStation.reportWarning("Intake auto command was interrupted", false);
             }
         });
+
+
+=======
+    public Command powerIntake() {
+        return startEnd(
+            () -> intakeMotor.set(-0.5),
+            () -> intakeMotor.set(0.0));
+>>>>>>> b62686924a2859a436b04e5ea6f6158882b830b1
     }
 }
