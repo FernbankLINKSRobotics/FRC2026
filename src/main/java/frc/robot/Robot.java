@@ -49,7 +49,7 @@ public class Robot extends TimedRobot
   @Override
   public void robotInit()
   {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    // Instantiate our RobotContainer.  This will perform all our butto                                        n bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
@@ -119,6 +119,7 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit()
   {
+    Commands.runOnce(() -> RobotContainer.shooterSubsystem.toggleShooter());
     /*
     m_robotContainer.setMotorBrake(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand(m_chooser.getSelected());/
@@ -126,7 +127,7 @@ public class Robot extends TimedRobot
     if (m_autonomousCommand != null)
     {
       m_autonomousCommand.schedule();
-    } else if (m_chooser.getSelected() == "Simple auto") {*/
+    } else if (m_chooser.getSelected() == "Simple auto") {
       try {
         Commands.runOnce(() -> RobotContainer.shooterSubsystem.toggleShooter());
         Thread.sleep(1000);
@@ -139,7 +140,7 @@ public class Robot extends TimedRobot
         //Commands.runOnce(() -> RobotContainer.intakeSubsystem.toggleIntake());
       } catch (Exception e) {
         // TODO: handle exception
-      }
+      }*/
     //}
     //m_autonomousCommand.schedule();
   }

@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-//import frc.robot.subsystems.scoring.IntakeSubsystem;
+import frc.robot.subsystems.scoring.IntakeSubsystem;
 import frc.robot.subsystems.scoring.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
@@ -39,7 +39,7 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   public final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve/maxSwerve"));
   public static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  //public static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  public static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   //private Vision vision;
 
   /**
@@ -87,8 +87,8 @@ public class RobotContainer
    */
   private void configureBindings()
   {
-    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
-    //Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
+    //Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
     
     //Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
     //Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
@@ -96,12 +96,12 @@ public class RobotContainer
     //Command driveFieldOrientedAnglularVelocityKeyboard = drivebase.driveFieldOriented(driveAngularVelocityKeyboard);
     //Command driveSetpointGenKeyboard = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngleKeyboard);
 
-    drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity);
     //drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity);
 
     if (DriverStation.isTest())
     {
-      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
+      drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity); // Overrides drive command above!
 
       driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2));
@@ -112,13 +112,13 @@ public class RobotContainer
 
     } else {
       driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      //driverXbox.b().whileTrue(intakeSubsystem.powerIntake());
+      driverXbox.b().whileTrue(intakeSubsystem.toggleIntake());
 
       driverXbox.rightTrigger(0.5).whileTrue(shooterSubsystem.runIndexer());
       driverXbox.rightBumper().whileTrue(shooterSubsystem.toggleShooter());
 
-      //driverXbox.leftBumper().whileTrue(intakeSubsystem.raiseIntake());
-      //driverXbox.leftTrigger().whileTrue(intakeSubsystem.lowerIntake());
+      driverXbox.leftBumper().whileTrue(intakeSubsystem.raiseIntake());
+      driverXbox.leftTrigger().whileTrue(intakeSubsystem.lowerIntake());
 
       //driverXbox.back().whileTrue(Commands.none());
       driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
