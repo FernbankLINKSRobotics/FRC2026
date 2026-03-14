@@ -28,7 +28,7 @@ public class IntakeSubsystem extends SubsystemBase{
     public Command toggleIntake() {
         return runOnce(() -> {
             if (!intakePower) {
-                intakeMotor.set(1.0);
+                intakeMotor.set(-0.5);
                 intakePower = true;
             } else {
                 intakeMotor.set(0.0);
