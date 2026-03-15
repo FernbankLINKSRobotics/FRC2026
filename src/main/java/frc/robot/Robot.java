@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.cameraserver.CameraServer;
 
@@ -33,13 +32,11 @@ public class Robot extends TimedRobot
 
   private Timer disabledTimer;
 
-  public Robot()
-  {
+  public Robot() {
     instance = this;
   }
 
-  public static Robot getInstance()
-  {
+  public static Robot getInstance() {
     return instance;
   }
 
@@ -87,6 +84,7 @@ public class Robot extends TimedRobot
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     //System.out.println(m_robotContainer.drivebase.getSwerveVision().getDistanceFromAprilTag(24));
+    //SmartDashboard.putNumber("Shooter power", RobotContainer.shooterSubsystem.shooterLevel);
   }
 
   /**

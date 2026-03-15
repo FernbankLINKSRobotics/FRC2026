@@ -33,7 +33,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
-import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -67,12 +66,12 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * PhotonVision class to keep an accurate odometry.
    */
-  private       Vision      vision;
+  //private       Vision      vision;
 
-  public Vision getSwerveVision() {
+  /*public Vision getSwerveVision() {
     //System.out.println("SwerveSubsystem.getSwerveVision line 73");
     return vision;
-  }
+  }*/
 
 
   /**
@@ -112,7 +111,7 @@ public class SwerveSubsystem extends SubsystemBase
     // swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
     if (visionDriveTest)
     {
-      setupPhotonVision();
+      //setupPhotonVision();
       // Stop the odometry thread if we are using vision that way we can synchronize updates better.
       //swerveDrive.stopOdometryThread();
       System.out.println("set up photon vision");
@@ -139,10 +138,10 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Setup the photon vision class.
    */
-  public void setupPhotonVision()
+  /*public void setupPhotonVision()
   {
     vision = new Vision(swerveDrive::getPose, swerveDrive.field);
-  }
+  }*/
 
   @Override
   public void periodic()
@@ -151,8 +150,8 @@ public class SwerveSubsystem extends SubsystemBase
     if (visionDriveTest)
     {
       swerveDrive.updateOdometry();
-      vision.updatePoseEstimation(swerveDrive);
-      vision.getDistanceFromAprilTag(26);
+      //vision.updatePoseEstimation(swerveDrive);
+      //vision.getDistanceFromAprilTag(26);
     }
   }
 
@@ -237,7 +236,7 @@ public class SwerveSubsystem extends SubsystemBase
    *
    * @return A {@link Command} which will run the alignment.
    */
-  public Command aimAtTarget(Cameras camera)
+  /*public Command aimAtTarget(Cameras camera)
   {
 
     return run(() -> {
@@ -254,7 +253,7 @@ public class SwerveSubsystem extends SubsystemBase
         }
       }
     });
-  }
+  }*/
 
   private boolean called= false;
 

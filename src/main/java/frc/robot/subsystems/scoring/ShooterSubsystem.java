@@ -23,6 +23,7 @@ public class ShooterSubsystem extends SubsystemBase{
     public int RPMs = 1000;
     public Boolean shooterPower = false;
     public Boolean indexerPower = false;
+    public Double shooterLevel = 0.6;
 
     public ShooterSubsystem() {
         leftShooterMotor = new SparkMax(2, MotorType.kBrushless);
@@ -101,7 +102,29 @@ public class ShooterSubsystem extends SubsystemBase{
                 //rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
                 leftShooterMotor.set(0);
                 rightShooterMotor.set(0);
-               shooterPower = false;
+                shooterPower = false;
+            }
+        });
+    }
+
+    public Command fixedShot(double power) {
+        return runOnce(() -> {
+            if (!shooterPower) { try {
+                //leftShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                //rightShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                leftShooterMotor.set(power);
+                rightShooterMotor.set(power);
+                shooterPower = true;
+                Thread.sleep((long) Math.pow(power*1.7, 2.0)*1000);
+                indexerMotor.set(1.0);
+                } catch (InterruptedException e) {}
+            } else {
+                //leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                //rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                leftShooterMotor.set(0);
+                rightShooterMotor.set(0);
+                shooterPower = false;
+                indexerMotor.set(0);
             }
         });
     }

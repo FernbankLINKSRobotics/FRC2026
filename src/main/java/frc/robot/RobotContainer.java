@@ -112,10 +112,10 @@ public class RobotContainer
 
     } else {
       driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverXbox.b().whileTrue(intakeSubsystem.toggleIntake());
+      driverXbox.b().onTrue(intakeSubsystem.toggleIntake());
 
-      driverXbox.rightTrigger(0.5).whileTrue(shooterSubsystem.runIndexer());
-      driverXbox.rightBumper().whileTrue(shooterSubsystem.toggleShooter());
+      driverXbox.rightTrigger(0.5).onTrue(shooterSubsystem.fixedShot(0.6)); //6 foot shot
+      driverXbox.rightBumper().onTrue(shooterSubsystem.fixedShot(0.8)); //long range shot
 
       driverXbox.leftBumper().whileTrue(intakeSubsystem.raiseIntake());
       driverXbox.leftTrigger().whileTrue(intakeSubsystem.lowerIntake());
@@ -123,8 +123,7 @@ public class RobotContainer
       //driverXbox.back().whileTrue(Commands.none());
       driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverXbox.y().whileTrue(drivebase.turnToAngle(90));
-      //driverXbox.povUp().onTrue(Commands.runOnce(shooterSubsystem::increaseDistance));
-      //driverXbox.povDown().onTrue(Commands.runOnce(shooterSubsystem::decreaseDistance));
+      driverXbox.povUp().onTrue(shooterSubsystem.fixedShot(0.8));
     }
 
   }
