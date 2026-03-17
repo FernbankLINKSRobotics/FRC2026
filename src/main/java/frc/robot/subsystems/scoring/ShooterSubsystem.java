@@ -12,6 +12,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.ResetMode;
 import com.revrobotics.PersistMode;
+import frc.robot.subsystems.swervedrive.Vision;
+import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase{
     private SparkMax leftShooterMotor;
@@ -25,6 +27,7 @@ public class ShooterSubsystem extends SubsystemBase{
     public Boolean shooterPower = false;
     public Boolean indexerPower = false;
     public Double shooterLevel = 0.6;
+    private Vision vision = new Vision();
 
     public ShooterSubsystem() {
         leftShooterMotor = new SparkMax(2, MotorType.kBrushless);
@@ -106,6 +109,18 @@ public class ShooterSubsystem extends SubsystemBase{
                 shooterPower = false;
             }
         });
+    }
+
+    /**
+     * Calculates the required RPMs for the shooter based on the distance to the target.
+     * @return RPMs needed to fire fuel into the hub.
+     */
+    public int getShooterRPMs() {
+        double distance = vision.getDistanceToHub();
+        double RPMs; //TODO: Implement RPM calculation based on distance and exit velocity
+        double exitVelocity = distance; //TODO: Implement exit velocity calculation based on distance
+        RPMs = (exitVelocity/Constants.ShooterConstants.WHEEL_RADIUS)*2*Math.PI*60;
+        return (int) RPMs; // Return the calculated RPMs
     }
 
     public Command fixedShot(double power) {

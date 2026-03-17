@@ -30,8 +30,7 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  @Override
-  public void periodic() {
+  public double getDistanceToHub() {
     var result = centerCamera.getLatestResult();
     if(result.hasTargets()) {
       for (var target : result.getTargets()) {
@@ -42,5 +41,6 @@ public class Vision extends SubsystemBase {
         }
       }
     }
+    return targetRange;
   }
 }

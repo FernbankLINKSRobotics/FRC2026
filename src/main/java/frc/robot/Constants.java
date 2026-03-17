@@ -42,6 +42,11 @@ public final class Constants
     public static final double WHEEL_LOCK_TIME = 10; // seconds
   }
 
+  public static final class ShooterConstants
+  {
+    public static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
+  }
+
   public static class OperatorConstants
   {
 
