@@ -113,7 +113,7 @@ public class ShooterSubsystem extends SubsystemBase{
             if (!shooterPower) { try {
                 leftShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
                 rightShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                //.set(power);
+                //leftShooterMotor.set(power);
                 //rightShooterMotor.set(power);
                 shooterPower = true;
                 Thread.sleep((long) Math.pow(power*1.7, 2.0)*1000);
@@ -137,10 +137,10 @@ public class ShooterSubsystem extends SubsystemBase{
         return runOnce(() -> {
             if (!indexerPower) {
                 indexerMotor.set(1.0);
-                indexerPower = !indexerPower;
+                indexerPower = true;
             } else {
                 indexerMotor.set(0.0);
-                indexerPower = !indexerPower;
+                indexerPower = false;
             }
         });
     }
