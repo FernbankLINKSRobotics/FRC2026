@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 
 /**
@@ -117,7 +119,9 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit()
   {
-    RobotContainer.shooterSubsystem.AutoShoot();
+    //CommandScheduler.getInstance().schedule(RobotContainer.shooterSubsystem.AutoShoot());
+    CommandScheduler.getInstance().schedule(RobotContainer.shooterSubsystem.fixedShot(0.8));
+    m_robotContainer.drivebase.drive(new Translation2d(0,-0.5),0, false);
   }
 
   /**
@@ -125,7 +129,8 @@ public class Robot extends TimedRobot
    */
   @Override
   public void autonomousPeriodic()
-  { }
+  {
+  }
 
   @Override
   public void teleopInit()

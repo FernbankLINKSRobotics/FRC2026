@@ -48,6 +48,16 @@ public class IntakeSubsystem extends SubsystemBase{
     }
 
     /**
+     * Enables the intake
+     */
+    public Command enableIntake() {
+        return runOnce(() -> {
+            intakeMotor.set(-0.5);
+            intakePower = true;
+        });
+    }
+
+    /**
      * Lowers the intake by driving the intake movement motor at full positive speed while the command is active and stops the motor when the command ends.
      */
     public Command lowerIntake() {
