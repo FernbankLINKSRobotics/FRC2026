@@ -255,18 +255,6 @@ public class SwerveSubsystem extends SubsystemBase
     });
   }*/
 
-  private boolean called= false;
-
-  public Command turnToAngle(double degrees)
-  {
-    return run(() -> {
-      if (!called) {
-        called = true;
-        drive(getTargetSpeeds(0, 0, Rotation2d.fromDegrees(degrees)));
-      }
-    });
-  }
-
   /**
    * Get the path follower with events.
    *

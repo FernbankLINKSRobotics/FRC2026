@@ -124,6 +124,7 @@ public class RobotContainer
       driverXbox.x().whileTrue(intakeSubsystem.toggleIntake());
       driverXbox.y().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverXbox.povUp().onTrue(shooterSubsystem.fixedShot(0.8));
+      driverXbox.povDown().onTrue(Commands.runOnce(() -> drivebase.drive(null, 90, false)));
     }
 
   }
