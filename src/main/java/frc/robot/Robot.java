@@ -119,9 +119,11 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit()
   {
+    m_robotContainer.drivebase.drive(new Translation2d(0,-0.5),0, false);
+    Timer.delay(0.1);
+    m_robotContainer.drivebase.drive(new Translation2d(0,0),0, false);
     //CommandScheduler.getInstance().schedule(RobotContainer.shooterSubsystem.AutoShoot());
     CommandScheduler.getInstance().schedule(RobotContainer.shooterSubsystem.fixedShot(0.8));
-    m_robotContainer.drivebase.drive(new Translation2d(0,-0.5),0, false);
   }
 
   /**
