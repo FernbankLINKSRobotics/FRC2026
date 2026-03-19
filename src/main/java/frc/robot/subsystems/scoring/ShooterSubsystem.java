@@ -117,9 +117,9 @@ public class ShooterSubsystem extends SubsystemBase{
      */
     public int getShooterRPMs() {
         double distance = vision.getDistanceToHub();
-        double RPMs; //TODO: Implement RPM calculation based on distance and exit velocity
+        double RPMs;
         double exitVelocity = distance; //TODO: Implement exit velocity calculation based on distance
-        RPMs = (exitVelocity/Constants.ShooterConstants.WHEEL_RADIUS)*2*Math.PI*60;
+        RPMs = (exitVelocity/Constants.ShooterConstants.WHEEL_RADIUS)*120*Math.PI;
         return (int) RPMs; // Return the calculated RPMs
     }
 
