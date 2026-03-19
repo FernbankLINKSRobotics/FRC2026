@@ -142,7 +142,7 @@ public class ShooterSubsystem extends SubsystemBase{
                 leftShooterMotor.set(power);
                 rightShooterMotor.set(power);
                 shooterPower = true;
-                //CommandScheduler.getInstance().schedule(indexCMD);
+                CommandScheduler.getInstance().schedule(indexCMD);
             } else {
                 //leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
                 //rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);

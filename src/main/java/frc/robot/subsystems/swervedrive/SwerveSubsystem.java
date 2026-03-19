@@ -480,6 +480,13 @@ public class SwerveSubsystem extends SubsystemBase
                       false); // Open loop is disabled since it shouldn't be used most of the time.
   }
 
+  public Command turnToAngle(double degrees)
+  {
+    return run(() -> {
+      drive(getTargetSpeeds(0, 0, Rotation2d.fromDegrees(degrees)));
+    });
+  }
+
   /**
    * Drive the robot given a chassis field oriented velocity.
    *

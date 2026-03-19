@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 
@@ -119,9 +118,11 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit()
   {
-    m_robotContainer.drivebase.drive(new Translation2d(0,-0.5),0, false);
-    Timer.delay(0.1);
-    m_robotContainer.drivebase.drive(new Translation2d(0,0),0, false);
+    m_robotContainer.drivebase.drive(new Translation2d(-4.0,0),0, true);
+    Timer.delay(0.2);
+    m_robotContainer.drivebase.drive(new Translation2d(0,0),0, true);
+    Timer.delay(0.5);
+    //CommandScheduler.getInstance().schedule(m_robotContainer.drivebase.turnToAngle(80));
     //CommandScheduler.getInstance().schedule(RobotContainer.shooterSubsystem.AutoShoot());
     CommandScheduler.getInstance().schedule(RobotContainer.shooterSubsystem.fixedShot(0.8));
   }
