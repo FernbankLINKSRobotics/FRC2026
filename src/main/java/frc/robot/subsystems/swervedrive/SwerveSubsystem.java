@@ -25,6 +25,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,12 +37,10 @@ import frc.robot.Constants;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
-import org.photonvision.targeting.PhotonPipelineResult;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -491,6 +490,12 @@ public class SwerveSubsystem extends SubsystemBase
                       fieldRelative,
                       false); // Open loop is disabled since it shouldn't be used most of the time.
   }
+
+  public void shakeSwerve() { try {
+    drive(new Translation2d(Distance.ofRelativeUnits(0.1, Meter), Distance.ofRelativeUnits(0.0, Meter)) , 0.0, false);
+    Thread.sleep(50);
+    drive(new Translation2d(Distance.ofRelativeUnits(0.0, Meter), Distance.ofRelativeUnits(0.0, Meter)) , 0.0, false);
+  } catch(Exception e) {} }
 
   /**
    * Drive the robot given a chassis field oriented velocity.
