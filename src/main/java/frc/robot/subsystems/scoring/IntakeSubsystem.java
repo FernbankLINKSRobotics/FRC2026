@@ -1,6 +1,7 @@
 package frc.robot.subsystems.scoring;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkMax;
@@ -28,7 +29,7 @@ public class IntakeSubsystem extends SubsystemBase{
     public Command toggleIntake() {
         return runOnce(() -> {
             if (!intakePower) {
-                intakeMotor.set(-0.5);
+                intakeMotor.set(-0.7);
                 intakePower = true;
             } else {
                 intakeMotor.set(0.0);
@@ -52,7 +53,7 @@ public class IntakeSubsystem extends SubsystemBase{
      */
     public Command enableIntake() {
         return runOnce(() -> {
-            intakeMotor.set(-0.5);
+            intakeMotor.set(-0.7);
             intakePower = true;
         });
     }
@@ -62,7 +63,7 @@ public class IntakeSubsystem extends SubsystemBase{
      */
     public Command lowerIntake() {
         return runEnd(
-            () -> intakeMovementMotor.set(1.0),
+            () -> intakeMovementMotor.set(-0.25),
             () -> intakeMovementMotor.set(0.0));
     }
 
@@ -71,7 +72,7 @@ public class IntakeSubsystem extends SubsystemBase{
      */
     public Command raiseIntake() {
         return runEnd(
-            () -> intakeMovementMotor.set(-1.0),
+            () -> intakeMovementMotor.set(0.5),
             () -> intakeMovementMotor.set(0.0));
     }
 
@@ -80,19 +81,15 @@ public class IntakeSubsystem extends SubsystemBase{
      */
     public Command intakeAuto() {
         return runOnce(() -> {
-            try {
-                intakeMovementMotor.set(-1.0);
-                Thread.sleep(50);
-                intakeMovementMotor.set(0.0);
-            } catch (InterruptedException e) {
-                DriverStation.reportWarning("Intake auto command was interrupted", false);
-            }
+            intakeMovementMotor.set(-0.2);
+            Timer.delay(0.5);
+            intakeMovementMotor.set(0.0);
         });
     }
 
     public Command powerIntake() {
         return startEnd(
-            () -> intakeMotor.set(-0.5),
+            () -> intakeMotor.set(-0.7),
             () -> intakeMotor.set(0.0));
     }
 }

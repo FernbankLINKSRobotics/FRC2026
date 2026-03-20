@@ -34,7 +34,7 @@ public class ShooterSubsystem extends SubsystemBase{
     public Boolean shooterPower = false;
     public Boolean indexerPower = false;
     public Double shooterLevel = 0.6;
-    public Command indexCMD = new SequentialCommandGroup(new WaitCommand(2), new InstantCommand(() -> indexerMotor.set(0.2)));
+    public Command indexCMD = new SequentialCommandGroup(new WaitCommand(2), new InstantCommand(() -> indexerMotor.set(0.45)));
     //private Vision vision = new Vision();
 
     public ShooterSubsystem() {
@@ -59,7 +59,7 @@ public class ShooterSubsystem extends SubsystemBase{
             leftShooterMotor.set(0.6);
             rightShooterMotor.set(0.6);
             Timer.delay(4);
-            indexerMotor.set(0.2);
+            indexerMotor.set(0.45);
             CommandScheduler.getInstance().schedule(RobotContainer.intakeSubsystem.enableIntake());
             Timer.delay(10.0);
             leftShooterMotor.set(0);
@@ -95,8 +95,9 @@ public class ShooterSubsystem extends SubsystemBase{
         return runOnce(() -> {
             //leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
             //rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-            leftShooterMotor.set(0);
-            rightShooterMotor.set(0);
+            leftShooterMotor.set(0.0);
+            rightShooterMotor.set(0.0);
+            indexerMotor.set(0.0);
             shooterPower = false;
         });
     }
@@ -152,6 +153,19 @@ public class ShooterSubsystem extends SubsystemBase{
                 indexerMotor.set(0);
             }
         });
+    }
+
+    public Command reverseShooter() {
+        return startEnd(
+            () -> {
+                leftShooterMotor.set(-1.0);
+                rightShooterMotor.set(-1.0);
+            },
+            () -> {
+                leftShooterMotor.set(0.0);
+                rightShooterMotor.set(0.0);
+            }
+        );
     }
 
     /**
