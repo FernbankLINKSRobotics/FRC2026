@@ -254,18 +254,6 @@ public class SwerveSubsystem extends SubsystemBase
     });
   }*/
 
-  private boolean called= false;
-
-  public Command turnToAngle(double degrees)
-  {
-    return run(() -> {
-      if (!called) {
-        called = true;
-        drive(getTargetSpeeds(0, 0, Rotation2d.fromDegrees(degrees)));
-      }
-    });
-  }
-
   /**
    * Get the path follower with events.
    *
@@ -491,11 +479,18 @@ public class SwerveSubsystem extends SubsystemBase
                       false); // Open loop is disabled since it shouldn't be used most of the time.
   }
 
-  public void shakeSwerve() { try {
+  public void shakeSwerve() {
     drive(new Translation2d(Distance.ofRelativeUnits(0.1, Meter), Distance.ofRelativeUnits(0.0, Meter)) , 0.0, false);
-    Thread.sleep(50);
+    Timer.delay(0.05);
     drive(new Translation2d(Distance.ofRelativeUnits(0.0, Meter), Distance.ofRelativeUnits(0.0, Meter)) , 0.0, false);
-  } catch(Exception e) {} }
+  }
+
+  public Command turnToAngle(double degrees)
+  {
+    return run(() -> {
+      drive(getTargetSpeeds(0, 0, Rotation2d.fromDegrees(degrees)));
+    });
+  }
 
   /**
    * Drive the robot given a chassis field oriented velocity.
