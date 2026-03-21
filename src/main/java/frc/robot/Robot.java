@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 
@@ -98,8 +97,8 @@ public class Robot extends TimedRobot
     m_robotContainer.setMotorBrake(true);
     disabledTimer.reset();
     disabledTimer.start();
-    //Commands.runOnce(shooterSubsystem::disableShooter, shooterSubsystem);
-    //Commands.runOnce(intakeSubsystem::disableIntake, intakeSubsystem);
+    CommandScheduler.getInstance().schedule(RobotContainer.intakeSubsystem.disableIntake());
+    CommandScheduler.getInstance().schedule(RobotContainer.shooterSubsystem.disableShooter());
   }
 
   @Override
