@@ -61,6 +61,7 @@ public class ShooterSubsystem extends SubsystemBase{
             Timer.delay(4);
             indexerMotor.set(0.45);
             CommandScheduler.getInstance().schedule(RobotContainer.intakeSubsystem.enableIntake());
+            CommandScheduler.getInstance().schedule(RobotContainer.intakeSubsystem.intakeAuto());
             Timer.delay(10.0);
             leftShooterMotor.set(0);
             rightShooterMotor.set(0);
