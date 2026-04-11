@@ -1,7 +1,6 @@
 package frc.robot.subsystems.scoring;
 
 import edu.wpi.first.wpilibj.Timer;
-//import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 //import edu.wpi.first.wpilibj2.command.Commands;
@@ -12,24 +11,24 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 
 import com.revrobotics.spark.SparkMax;
-//import com.revrobotics.spark.ClosedLoopSlot;
-//import com.revrobotics.spark.SparkBase.ControlType;
-//import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-//import com.revrobotics.spark.config.SparkMaxConfig;
-//import com.revrobotics.ResetMode;
-//import com.revrobotics.PersistMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.ResetMode;
+import com.revrobotics.PersistMode;
 //import frc.robot.subsystems.swervedrive.Vision;
-//import frc.robot.Constants;
+import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase{
     private SparkMax leftShooterMotor;
     private SparkMax rightShooterMotor;
     private SparkMax indexerMotor;
-    /*private SparkClosedLoopController leftShooterController;
+    private SparkClosedLoopController leftShooterController;
     private SparkMaxConfig leftShooterConfigs;
     private SparkClosedLoopController rightShooterController;
-    private SparkMaxConfig rightShooterConfigs;*/
+    private SparkMaxConfig rightShooterConfigs;
     public int RPMs = 1000;
     public Boolean shooterPower = false;
     public Boolean indexerPower = false;
@@ -41,11 +40,11 @@ public class ShooterSubsystem extends SubsystemBase{
         leftShooterMotor = new SparkMax(2, MotorType.kBrushless);
         rightShooterMotor = new SparkMax(13, MotorType.kBrushless);
         indexerMotor = new SparkMax(14, MotorType.kBrushed);
-        //leftShooterController = leftShooterMotor.getClosedLoopController();
-        //leftShooterConfigs = new SparkMaxConfig();
-        //rightShooterController = rightShooterMotor.getClosedLoopController();
-        //rightShooterConfigs = new SparkMaxConfig();
-        //setPIDConfigs();
+        leftShooterController = leftShooterMotor.getClosedLoopController();
+        leftShooterConfigs = new SparkMaxConfig();
+        rightShooterController = rightShooterMotor.getClosedLoopController();
+        rightShooterConfigs = new SparkMaxConfig();
+        setPIDConfigs();
     }
 
     /**
@@ -72,64 +71,42 @@ public class ShooterSubsystem extends SubsystemBase{
 
     /**
      * Initialize and apply PID and output-range settings for the left shooter closed-loop controller.
-     *
+     */
     public void setPIDConfigs() {
         leftShooterConfigs.closedLoop
-            .p(0.5)
+            .p(0.2)
             .i(0.0)
             .d(0.1)
             .outputRange(0.0, 1.0);
         leftShooterMotor.configure(leftShooterConfigs, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         rightShooterConfigs.closedLoop
-            .p(0.5)
+            .p(0.2)
             .i(0.0)
             .d(0.1)
             .outputRange(0.0, 1.0);
         rightShooterMotor.configure(rightShooterConfigs, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        DriverStation.reportWarning(("PID configs initialized in subsystem with name: " + getName()), false);
-    }*/
+    }
 
     /**
      * Command to disable the shooter motors.
      */
     public Command disableShooter() {
         return runOnce(() -> {
-            //leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-            //rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-            leftShooterMotor.set(0.0);
-            rightShooterMotor.set(0.0);
+            leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+            rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+            //leftShooterMotor.set(0.0);
+            //rightShooterMotor.set(0.0);
             indexerMotor.set(0.0);
             shooterPower = false;
         });
     }
 
     /**
-     * Toggle the shooter's power state and updates the left shooter controller setpoint.
-     *
-    public Command toggleShooter(double RPMs) {
-        return runOnce(() -> {
-            if (!shooterPower) {
-                leftShooterController.setSetpoint(RPMs, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                rightShooterController.setSetpoint(RPMs, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                //leftShooterMotor.set(0.6);
-                //rightShooterMotor.set(0.6);
-                shooterPower = true;
-            } else {
-                leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                //leftShooterMotor.set(0);
-                //rightShooterMotor.set(0);
-                shooterPower = false;
-            }
-        });
-    }*/
-
-    /**
      * Calculates the required RPMs for the shooter based on the distance to the target.
      * @return RPMs needed to fire fuel into the hub.
      *
     public int getShooterRPMs() {
-        double distance = vision.getDistanceToHub();
+        //double distance = vision.getDistanceToHub();
         double RPMs;
         double exitVelocity = distance;
         RPMs = (exitVelocity/Constants.ShooterConstants.WHEEL_RADIUS)*120*Math.PI;
@@ -139,17 +116,17 @@ public class ShooterSubsystem extends SubsystemBase{
     public Command fixedShot(double power) {
         return runOnce(() -> {
             if (!shooterPower) {
-                //leftShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                //rightShooterController.setSetpoint(1000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                leftShooterMotor.set(power);
-                rightShooterMotor.set(power);
+                leftShooterController.setSetpoint(power*4000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                rightShooterController.setSetpoint(power*4000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                //leftShooterMotor.set(power);
+                //rightShooterMotor.set(power);
                 shooterPower = true;
-                CommandScheduler.getInstance().schedule(indexCMD);
+                //CommandScheduler.getInstance().schedule(indexCMD);
             } else {
-                //leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                //rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                leftShooterMotor.set(0);
-                rightShooterMotor.set(0);
+                leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                //leftShooterMotor.set(0);
+                //rightShooterMotor.set(0);
                 shooterPower = false;
                 indexerMotor.set(0);
             }
@@ -168,32 +145,4 @@ public class ShooterSubsystem extends SubsystemBase{
             }
         );
     }
-
-    /**
-     * Toggles the indexer between running and stopped.
-     */
-    public Command toggleIndexer() {
-        return runOnce(() -> {
-            if (!indexerPower) {
-                indexerMotor.set(1.0);
-                indexerPower = true;
-            } else {
-                indexerMotor.set(0.0);
-                indexerPower = false;
-            }
-        });
-    }
-
-    public Command runIndexer() {
-        return startEnd(
-            () -> indexerMotor.set(1.0),
-            () -> indexerMotor.set(0.0)
-        );
-    }
-
-    /**
-     * No-operation placeholder method.
-     */
-    public void nothing() {}
-
 }
