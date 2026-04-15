@@ -9,7 +9,7 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
- * Subsystem that manages the robot's intake assembly.
+ * Subsystem for the intake
  */
 public class IntakeSubsystem extends SubsystemBase{
     private final SparkMax intakeMovementMotor;
