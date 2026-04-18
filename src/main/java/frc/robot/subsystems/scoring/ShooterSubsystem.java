@@ -24,7 +24,6 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.PersistMode;
 //import frc.robot.subsystems.swervedrive.Vision;
-import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase{
     private SparkMax leftShooterMotor;
@@ -134,8 +133,11 @@ public class ShooterSubsystem extends SubsystemBase{
 
     public Command sysIdTestAll = new SequentialCommandGroup(
         sysIdQuasistatic(Direction.kForward),
+        new WaitCommand(2000),
         sysIdQuasistatic(Direction.kReverse),
+        new WaitCommand(2000),
         sysIdDynamic(Direction.kForward),
+        new WaitCommand(2000),
         sysIdDynamic(Direction.kReverse)
     );
 
@@ -154,10 +156,10 @@ public class ShooterSubsystem extends SubsystemBase{
     public Command fixedShot(double power) {
         return runOnce(() -> {
             if (!shooterPower) {
-                leftShooterController.setSetpoint(power*4000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                rightShooterController.setSetpoint(power*4000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                //leftShooterMotor.set(power);
-                //rightShooterMotor.set(power);
+                //leftShooterController.setSetpoint(power*4000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                //rightShooterController.setSetpoint(power*4000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                leftShooterMotor.set(power);
+                rightShooterMotor.set(power);
                 shooterPower = true;
                 CommandScheduler.getInstance().schedule(indexCMD);
             } else {
@@ -166,6 +168,7 @@ public class ShooterSubsystem extends SubsystemBase{
                 rightShooterMotor.set(0);
                 shooterPower = false;
                 indexerMotor.set(0);
+                CommandScheduler.getInstance().cancel(indexCMD);
             }
         });
     }
