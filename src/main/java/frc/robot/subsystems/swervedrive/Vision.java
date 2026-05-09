@@ -7,6 +7,9 @@ package frc.robot.subsystems.swervedrive;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.EstimatedRobotPose;
+import java.util.Optional;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -20,21 +23,34 @@ import edu.wpi.first.math.geometry.Rotation3d;
 
 public class Vision extends SubsystemBase {
 
-  public PhotonCamera centerCamera;
+  public PhotonCamera leftCamera;
+
+  public PhotonCamera rightCamera;
+
+  public static final AprilTagFieldLayout rebuiltField = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+
+  public PhotonPoseEstimator leftEstimator = new PhotonPoseEstimator(rebuiltField, new Transform3d(new Translation3d(0,0,0), new Rotation3d()));
+  public PhotonPoseEstimator rightEstimator = new PhotonPoseEstimator(rebuiltField, new Transform3d(new Translation3d(0,0,0), new Rotation3d()));
+
+  public Vision() {
+    leftCamera = new PhotonCamera("left");
+    rightCamera = new PhotonCamera("right");
+
+  }
+
+  /* public PhotonCamera centerCamera;
 
   public static final AprilTagFieldLayout rebuiltTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   public static final Transform3d cameraPosition = new Transform3d(new Translation3d(0,0,0), new Rotation3d());
 
-  PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(rebuiltTagLayout, cameraPosition);
+  PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(rebuiltField, cameraPosition);
 
   public double targetYaw = 0.0;
   public double targetRange = 0.0;
   public int targetID;
 
-  
-
-  /** Creates a new Vision. */
+  /** Creates a new Vision. 
   public Vision() {
     centerCamera = new PhotonCamera("center");
     if (DriverStation.getAlliance().toString() == "Red") {
@@ -56,5 +72,5 @@ public class Vision extends SubsystemBase {
       }
     }
     return targetRange;
-  }
+  } */
 }
