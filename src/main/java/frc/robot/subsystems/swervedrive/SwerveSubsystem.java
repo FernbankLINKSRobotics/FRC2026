@@ -62,6 +62,9 @@ public class SwerveSubsystem extends SubsystemBase
    * Enable vision odometry updates while driving.
    */
   private final boolean     visionDriveTest = true;
+
+  private final PerModuleFFSwerveController moduleController;
+  private final moduleFeedForwards moduleFowards;
   /**
    * PhotonVision class to keep an accurate odometry.
    */
@@ -94,9 +97,13 @@ public class SwerveSubsystem extends SubsystemBase
     try
     {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED, startingPose);
+      moduleFowards = new moduleFeedForwards();
+      moduleController = new PerModuleFFSwerveController(swerveDrive, moduleFowards);
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
     } catch (Exception e)
+
+
     {
       throw new RuntimeException(e);
     }
@@ -117,6 +124,7 @@ public class SwerveSubsystem extends SubsystemBase
     }
     setupPathPlanner();
     RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
+    //moduleController = new PerModuleFFSwerveController(swerveDrive, null);
   }
 
   /**
@@ -132,6 +140,9 @@ public class SwerveSubsystem extends SubsystemBase
                                   Constants.MAX_SPEED,
                                   new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)),
                                              Rotation2d.fromDegrees(0)));
+    moduleFowards = new moduleFeedForwards();
+
+    moduleController = new PerModuleFFSwerveController(swerveDrive, moduleFowards);
   }
 
   /**
@@ -511,6 +522,7 @@ public class SwerveSubsystem extends SubsystemBase
   {
     return run(() -> {
       swerveDrive.driveFieldOriented(velocity.get());
+      //moduleController.driveRobotRelative(velocity.get());
     });
   }
 

@@ -5,12 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
-//import edu.wpi.first.math.controller.ProfiledPIDController;
-//import edu.wpi.first.math.geometry.Pose2d;
-//import edu.wpi.first.math.geometry.Rotation2d;
-//import edu.wpi.first.math.geometry.Translation2d;
-//import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-//import edu.wpi.first.math.util.Units;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 //import edu.wpi.first.wpilibj.RobotBase;
@@ -88,13 +83,7 @@ public class RobotContainer
   private void configureBindings()
   {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
-    //Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
-    
-    //Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
-    //Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
-    //Command driveFieldOrientedDirectAngleKeyboard      = drivebase.driveFieldOriented(driveDirectAngleKeyboard);
-    //Command driveFieldOrientedAnglularVelocityKeyboard = drivebase.driveFieldOriented(driveAngularVelocityKeyboard);
-    //Command driveSetpointGenKeyboard = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngleKeyboard);
+  
 
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     //drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity);
@@ -124,32 +113,32 @@ public class RobotContainer
       //driverXbox.back().whileTrue(Commands.none());
       driverXbox.x().whileTrue(intakeSubsystem.toggleIntake());
       driverXbox.y().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.povUp().onTrue(shooterSubsystem.fixedShot(0.8));
+      driverXbox.povUp().onTrue(shooterSubsystem.fixedShot(1.0));
       driverXbox.povDown().onTrue(shooterSubsystem.fixedShot(0.9));
     }
-
   }
 
-  /**
-   * Use this to pass the autonomous command to @the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  /*
-  public Command getAutonomousCommand(String choice)
-  {
-    // An example command will be run in autonomous
-    if (choice.startsWith("Simple"))
-            return null;
-    
-    return drivebase.getAutonomousCommand(choice);
-  
-  */
+
   public void setMotorBrake(boolean brake)
   {
     drivebase.setMotorBrake(brake);
   }
 }
+
+  //import edu.wpi.first.math.controller.ProfiledPIDController;
+  //import edu.wpi.first.math.geometry.Pose2d;
+  //import edu.wpi.first.math.geometry.Rotation2d;
+  //import edu.wpi.first.math.geometry.Translation2d;
+  //import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+  //import edu.wpi.first.math.util.Units;
+
+  //Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
+    
+    //Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
+    //Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
+    //Command driveFieldOrientedDirectAngleKeyboard      = drivebase.driveFieldOriented(driveDirectAngleKeyboard);
+    //Command driveFieldOrientedAnglularVelocityKeyboard = drivebase.driveFieldOriented(driveAngularVelocityKeyboard);
+    //Command driveSetpointGenKeyboard = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngleKeyboard);
 
 
   /*SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream.of(drivebase.getSwerveDrive(),
@@ -208,3 +197,19 @@ public class RobotContainer
 //                              );
 
     }*/
+
+  /**
+   * Use this to pass the autonomous command to @the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  /*
+  public Command getAutonomousCommand(String choice)
+  {
+    // An example command will be run in autonomous
+    if (choice.startsWith("Simple"))
+            return null;
+    
+    return drivebase.getAutonomousCommand(choice);
+  
+  */

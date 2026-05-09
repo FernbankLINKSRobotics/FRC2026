@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.RobotContainer;
 
 import com.revrobotics.spark.SparkMax;
@@ -17,23 +19,30 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.ResetMode;
+
+import static edu.wpi.first.units.Units.Volts;
+
 import com.revrobotics.PersistMode;
 //import frc.robot.subsystems.swervedrive.Vision;
-import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase{
     private SparkMax leftShooterMotor;
-    private SparkMax rightShooterMotor;
-    private SparkMax indexerMotor;
     private SparkClosedLoopController leftShooterController;
     private SparkMaxConfig leftShooterConfigs;
+
+    private SparkMax rightShooterMotor;
     private SparkClosedLoopController rightShooterController;
     private SparkMaxConfig rightShooterConfigs;
-    public int RPMs = 1000;
-    public Boolean shooterPower = false;
+
+    private SparkMax indexerMotor;
     public Boolean indexerPower = false;
-    public Double shooterLevel = 0.6;
-    public Command indexCMD = new SequentialCommandGroup(new WaitCommand(2), new InstantCommand(() -> indexerMotor.set(0.45)));
+    public Command indexCMD = new SequentialCommandGroup(
+        new WaitCommand(3),
+        new InstantCommand(() -> indexerMotor.set(0.45))
+    );
+
+    public Boolean shooterPower = false;
+
     //private Vision vision = new Vision();
 
     public ShooterSubsystem() {
@@ -74,17 +83,15 @@ public class ShooterSubsystem extends SubsystemBase{
      */
     public void setPIDConfigs() {
         leftShooterConfigs.closedLoop
-            .p(0.2)
-            .i(0.0)
-            .d(0.1)
-            .outputRange(0.0, 1.0);
+            .pidf(0.5, 0, 0.25, 10.0)
+            .outputRange(0.4, 1.0);
         leftShooterMotor.configure(leftShooterConfigs, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         rightShooterConfigs.closedLoop
-            .p(0.2)
-            .i(0.0)
-            .d(0.1)
-            .outputRange(0.0, 1.0);
+            .pidf(0.5, 0, 0.25, 10.0)
+            .outputRange(0.4, 1.0);
         rightShooterMotor.configure(rightShooterConfigs, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        leftShooterMotor.set(0);
+        rightShooterMotor.set(0);
     }
 
     /**
@@ -92,14 +99,47 @@ public class ShooterSubsystem extends SubsystemBase{
      */
     public Command disableShooter() {
         return runOnce(() -> {
-            leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-            rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-            //leftShooterMotor.set(0.0);
-            //rightShooterMotor.set(0.0);
+            leftShooterMotor.set(0.0);
+            rightShooterMotor.set(0.0);
             indexerMotor.set(0.0);
             shooterPower = false;
         });
     }
+
+    public void setVoltage(double volts) {
+        leftShooterMotor.setVoltage(volts);
+        rightShooterMotor.setVoltage(volts);
+    }
+
+
+    // Create the SysId routine
+    private SysIdRoutine sysIdShooterMotorRoutine =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> setVoltage(voltage.in(Volts)),
+                null, // No log consumer, since data is recorded by URCL
+                this
+            )
+        );
+
+    private Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return sysIdShooterMotorRoutine.quasistatic(direction);
+    }
+
+    private Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return sysIdShooterMotorRoutine.dynamic(direction);
+    }
+
+    public Command sysIdTestAll = new SequentialCommandGroup(
+        sysIdQuasistatic(Direction.kForward),
+        new WaitCommand(2000),
+        sysIdQuasistatic(Direction.kReverse),
+        new WaitCommand(2000),
+        sysIdDynamic(Direction.kForward),
+        new WaitCommand(2000),
+        sysIdDynamic(Direction.kReverse)
+    );
 
     /**
      * Calculates the required RPMs for the shooter based on the distance to the target.
@@ -116,19 +156,19 @@ public class ShooterSubsystem extends SubsystemBase{
     public Command fixedShot(double power) {
         return runOnce(() -> {
             if (!shooterPower) {
-                leftShooterController.setSetpoint(power*4000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                rightShooterController.setSetpoint(power*4000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                //leftShooterMotor.set(power);
-                //rightShooterMotor.set(power);
+                //leftShooterController.setSetpoint(power*4000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                //rightShooterController.setSetpoint(power*4000, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                leftShooterMotor.set(power);
+                rightShooterMotor.set(power);
                 shooterPower = true;
-                //CommandScheduler.getInstance().schedule(indexCMD);
+                CommandScheduler.getInstance().schedule(indexCMD);
             } else {
-                leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-                //leftShooterMotor.set(0);
-                //rightShooterMotor.set(0);
+
+                leftShooterMotor.set(0);
+                rightShooterMotor.set(0);
                 shooterPower = false;
                 indexerMotor.set(0);
+                CommandScheduler.getInstance().cancel(indexCMD);
             }
         });
     }
