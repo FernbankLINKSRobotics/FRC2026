@@ -1,5 +1,7 @@
 package frc.robot.subsystems.scoring;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -19,11 +21,10 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.ResetMode;
-
-import static edu.wpi.first.units.Units.Volts;
-
 import com.revrobotics.PersistMode;
-//import frc.robot.subsystems.swervedrive.Vision;
+
+import frc.robot.Constants;
+
 
 public class ShooterSubsystem extends SubsystemBase{
     private SparkMax leftShooterMotor;
@@ -37,7 +38,7 @@ public class ShooterSubsystem extends SubsystemBase{
     private SparkMax indexerMotor;
     public Boolean indexerPower = false;
     public Command indexCMD = new SequentialCommandGroup(
-        new WaitCommand(3),
+        new WaitCommand(1),
         new InstantCommand(() -> indexerMotor.set(0.45))
     );
 
@@ -82,16 +83,11 @@ public class ShooterSubsystem extends SubsystemBase{
      * Initialize and apply PID and output-range settings for the left shooter closed-loop controller.
      */
     public void setPIDConfigs() {
-        leftShooterConfigs.closedLoop
-            .pidf(0.5, 0, 0.25, 10.0)
-            .outputRange(0.4, 1.0);
+        leftShooterConfigs.closedLoop.pid(0.5, 0, 0.25).outputRange(0.5, 1.0).feedForward.kS(0).kV(10).kA(0);
         leftShooterMotor.configure(leftShooterConfigs, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        rightShooterConfigs.closedLoop
-            .pidf(0.5, 0, 0.25, 10.0)
-            .outputRange(0.4, 1.0);
+
+        rightShooterConfigs.closedLoop.pid(0.5, 0, 0.25).outputRange(0.5, 1.0).feedForward.kS(0).kV(10).kA(0);
         rightShooterMotor.configure(rightShooterConfigs, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        leftShooterMotor.set(0);
-        rightShooterMotor.set(0);
     }
 
     /**
@@ -111,47 +107,42 @@ public class ShooterSubsystem extends SubsystemBase{
         rightShooterMotor.setVoltage(volts);
     }
 
-
-    // Create the SysId routine
-    private SysIdRoutine sysIdShooterMotorRoutine =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(),
-            new SysIdRoutine.Mechanism(
-                (voltage) -> setVoltage(voltage.in(Volts)),
-                null, // No log consumer, since data is recorded by URCL
-                this
-            )
-        );
-
-    private Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return sysIdShooterMotorRoutine.quasistatic(direction);
-    }
-
-    private Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return sysIdShooterMotorRoutine.dynamic(direction);
-    }
-
-    public Command sysIdTestAll = new SequentialCommandGroup(
-        sysIdQuasistatic(Direction.kForward),
-        new WaitCommand(2000),
-        sysIdQuasistatic(Direction.kReverse),
-        new WaitCommand(2000),
-        sysIdDynamic(Direction.kForward),
-        new WaitCommand(2000),
-        sysIdDynamic(Direction.kReverse)
-    );
-
     /**
      * Calculates the required RPMs for the shooter based on the distance to the target.
      * @return RPMs needed to fire fuel into the hub.
-     *
+     */
     public int getShooterRPMs() {
-        //double distance = vision.getDistanceToHub();
+        double distance = RobotContainer.vision.targetRange;
         double RPMs;
         double exitVelocity = distance;
         RPMs = (exitVelocity/Constants.ShooterConstants.WHEEL_RADIUS)*120*Math.PI;
         return (int) RPMs; // Return the calculated RPMs
-    }*/
+    }
+
+    public void initializeShooter() {
+        int targetRPMs = getShooterRPMs();
+        leftShooterController.setSetpoint(targetRPMs, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+        rightShooterController.setSetpoint(targetRPMs, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+        shooterPower = true;
+    }
+
+    public Command visionShot() {
+        return runOnce(() -> {
+            if (!indexerPower) {
+                int targetRPMs = getShooterRPMs();
+                leftShooterController.setSetpoint(targetRPMs, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                rightShooterController.setSetpoint(targetRPMs, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                indexerPower = true;
+                indexerMotor.set(0.45);
+            } else {
+                leftShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                rightShooterController.setSetpoint(0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+                indexerPower = false;
+                CommandScheduler.getInstance().cancel(indexCMD);
+                indexerMotor.set(0);
+            }
+        });
+    }
 
     public Command fixedShot(double power) {
         return runOnce(() -> {
@@ -163,9 +154,8 @@ public class ShooterSubsystem extends SubsystemBase{
                 shooterPower = true;
                 CommandScheduler.getInstance().schedule(indexCMD);
             } else {
-
-                leftShooterMotor.set(0);
-                rightShooterMotor.set(0);
+                leftShooterMotor.set(0.4);
+                rightShooterMotor.set(0.4);
                 shooterPower = false;
                 indexerMotor.set(0);
                 CommandScheduler.getInstance().cancel(indexCMD);
@@ -185,4 +175,25 @@ public class ShooterSubsystem extends SubsystemBase{
             }
         );
     }
+
+    // Create the SysId routine
+    private final SysIdRoutine sysIdShooterMotorRoutine =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> setVoltage(voltage.in(Volts)),
+                null,
+                this
+            )
+        );
+
+    public Command sysIdTestAll = new SequentialCommandGroup(
+        sysIdShooterMotorRoutine.quasistatic(Direction.kForward),
+        new WaitCommand(5),
+        sysIdShooterMotorRoutine.quasistatic(Direction.kReverse),
+        new WaitCommand(5),
+        sysIdShooterMotorRoutine.dynamic(Direction.kForward),
+        new WaitCommand(5),
+        sysIdShooterMotorRoutine.dynamic(Direction.kReverse)
+    );
 }

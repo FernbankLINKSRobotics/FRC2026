@@ -7,14 +7,15 @@ package frc.robot.subsystems.swervedrive;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
-import org.photonvision.targeting.PhotonTrackedTarget;
-import org.photonvision.EstimatedRobotPose;
-import java.util.Optional;
+//import org.photonvision.targeting.PhotonTrackedTarget;
+//import org.photonvision.EstimatedRobotPose;
+//import java.util.Optional;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -22,12 +23,12 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
 public class Vision extends SubsystemBase {
+  public static final AprilTagFieldLayout rebuiltField = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-  public PhotonCamera leftCamera;
+
+  /* public PhotonCamera leftCamera;
 
   public PhotonCamera rightCamera;
-
-  public static final AprilTagFieldLayout rebuiltField = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   public PhotonPoseEstimator leftEstimator = new PhotonPoseEstimator(rebuiltField, new Transform3d(new Translation3d(0,0,0), new Rotation3d()));
   public PhotonPoseEstimator rightEstimator = new PhotonPoseEstimator(rebuiltField, new Transform3d(new Translation3d(0,0,0), new Rotation3d()));
@@ -36,9 +37,8 @@ public class Vision extends SubsystemBase {
     leftCamera = new PhotonCamera("left");
     rightCamera = new PhotonCamera("right");
 
-  }
-
-  /* public PhotonCamera centerCamera;
+  }*/
+  public PhotonCamera centerCamera;
 
   public static final AprilTagFieldLayout rebuiltTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
@@ -47,10 +47,10 @@ public class Vision extends SubsystemBase {
   PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(rebuiltField, cameraPosition);
 
   public double targetYaw = 0.0;
-  public double targetRange = 0.0;
+  public double targetRange = 6.0;
   public int targetID;
 
-  /** Creates a new Vision. 
+  /** Creates a new Vision. */
   public Vision() {
     centerCamera = new PhotonCamera("center");
     if (DriverStation.getAlliance().toString() == "Red") {
@@ -60,7 +60,7 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  public double getDistanceToHub() {
+  public void periodic() {
     var result = centerCamera.getLatestResult();
     if(result.hasTargets()) {
       for (var target : result.getTargets()) {
@@ -70,7 +70,11 @@ public class Vision extends SubsystemBase {
           targetID = target.getFiducialId();
         }
       }
-    }
-    return targetRange;
-  } */
+    } /* else {
+      targetYaw = 0.0;
+      targetRange = 6.0;
+    } */
+    SmartDashboard.putNumber("Hub tag distance", targetRange);
+    SmartDashboard.putNumber("Hub tag yaw", targetYaw);
+  }
 }

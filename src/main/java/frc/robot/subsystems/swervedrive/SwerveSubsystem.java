@@ -50,6 +50,7 @@ import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import frc.robot.RobotContainer;
 
 public class SwerveSubsystem extends SubsystemBase
 {
@@ -501,6 +502,12 @@ public class SwerveSubsystem extends SubsystemBase
     return run(() -> {
       drive(getTargetSpeeds(0, 0, Rotation2d.fromDegrees(degrees)));
     });
+  }
+
+  public Command visionAim() {
+    return runOnce(() -> {
+      drive(getTargetSpeeds(0, 0, Rotation2d.fromDegrees(RobotContainer.vision.targetRange)));
+  });
   }
 
   /**

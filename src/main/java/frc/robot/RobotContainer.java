@@ -11,12 +11,15 @@ import edu.wpi.first.wpilibj.Filesystem;
 //import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.scoring.IntakeSubsystem;
 import frc.robot.subsystems.scoring.ShooterSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.Vision;
 
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -32,10 +35,11 @@ public class RobotContainer
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public static final CommandXboxController driverXbox = new CommandXboxController(0);
   // The robot's subsystems and commands are defined here...
-  public final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve/maxSwerve"));
+  public static final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),"swerve/maxSwerve"));
   public static final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   public static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-  //private Vision vision;
+  public static final Vision vision = new Vision();
+  private final Command aimAndShootCommand = new SequentialCommandGroup(drivebase.visionAim(), new WaitCommand(1), shooterSubsystem.visionShot());
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
@@ -100,7 +104,8 @@ public class RobotContainer
       driverXbox.rightBumper().onTrue(Commands.none());
 
     } else {
-      driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      driverXbox.a().onTrue(aimAndShootCommand);
       driverXbox.b().onTrue(intakeSubsystem.toggleIntake());
 
       driverXbox.rightTrigger(0.5).onTrue(shooterSubsystem.fixedShot(0.6)); //6 foot shot
@@ -123,6 +128,7 @@ public class RobotContainer
   {
     drivebase.setMotorBrake(brake);
   }
+
 }
 
   //import edu.wpi.first.math.controller.ProfiledPIDController;
